@@ -1,21 +1,19 @@
 # easy-flow
 
-> 简单易用的流程图
+> 基于VUE+JsPlumb的流程设计器
 
-## Build Setup
+## 启动
 
 ``` bash
-# install dependencies
+# 下载工程
+git clone  https://github.com/BiaoChengLiu/easy-flow.git
+
+# 安装依赖包
 npm install
 
-# serve with hot reload at localhost:8080
+# 启动
 npm run dev
 
-# build for production with minification
-npm run build
-
-# build for production and view the bundle analyzer report
-npm run build --report
+# 访问地址
+ http://localhost:8080
 ```
-
-For a detailed explanation on how things work, check out the [guide](http://vuejs-templates.github.io/webpack/) and [docs for vue-loader](http://vuejs.github.io/vue-loader).

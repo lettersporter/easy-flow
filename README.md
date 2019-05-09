@@ -4,6 +4,12 @@
 
 ![](https://github.com/BiaoChengLiu/easy-flow/blob/master/src/assets/easy-flow.png?raw=true)
 
+## 功能
+* 支持拖拽添加节点
+* 鼠标移入到节点中显示 编辑、删除 操作
+* 不支持节点线连接自己
+* 不支持节点A与节点B之间线互连
+
 ## 启动
 
 ``` bash

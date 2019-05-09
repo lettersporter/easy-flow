@@ -2,6 +2,8 @@
 
 > 基于VUE+JsPlumb的流程设计器
 
+![](https://github.com/BiaoChengLiu/easy-flow/blob/master/src/assets/easy-flow.png?raw=true)
+
 ## 启动
 
 ``` bash

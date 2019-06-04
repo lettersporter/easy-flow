@@ -6,12 +6,73 @@
 
 ![](https://gitee.com/xiaoka2017/resource/raw/master/easy-flow/2.png)
 
+![](https://gitee.com/xiaoka2017/resource/raw/master/easy-flow/3.png)
+
 ## 功能
 * 支持拖拽添加节点
 * 鼠标移入到节点中显示 编辑、删除 操作
 * 不支持节点线连接自己
 * 不支持节点A与节点B之间线互连
 * 点击线进行删除
+
+## 节点数据格式
+``` json
+
+[
+    {
+        "id": "nodeA",
+        "name": "节点A",
+        "left": "400px",
+        "top": "15px",
+        "ico": "el-icon-user-solid"
+    },
+    {
+        "id": "nodeB",
+        "name": "节点B",
+        "left": "400px",
+        "top": "200px",
+        "ico": "el-icon-goods"
+    },
+    {
+        "id": "nodeC",
+        "name": "节点C",
+        "left": "800px",
+        "top": "200px",
+        "ico": "el-icon-present"
+    }
+]
+
+```
+## 参数说明
+|    参数    |      描述      |
+| :--------: | :------------: |
+|  id  |     标识唯一的节点、可以与业务ID相结合      |
+|  name  |   节点名称      |
+|  left  |   节点在页面上的X坐标      |
+|  top  |   节点在页面上的Y坐标      |
+|  ico  |   节点显示的图标      |
+
+
+
+## 节点连线数据格式
+``` json
+[
+    {
+        "from": "nodeA",
+        "to": "nodeB"
+    },
+    {
+        "from": "nodeB",
+        "to": "nodeC"
+    }
+]
+```
+## 参数说明
+|    参数    |      描述      |
+| :--------: | :------------: |
+|  from  |     连线的起始节点的ID      |
+|  to  |   连线的终点节点ID      |
+
 
 ## 启动
 

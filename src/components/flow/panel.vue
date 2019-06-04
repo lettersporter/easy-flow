@@ -1,18 +1,18 @@
 <template>
     <div>
         <el-row>
-            <el-col :span="3">
+            <el-col :span="3" ref="flowTool">
                 <flowTool @addNode="addNode"></flowTool>
             </el-col>
             <el-col :span="21">
                 <el-row>
                     <el-col :span="24">
-                        <div style="margin-bottom: 5px; margin-left: 5px">
+                        <div style="margin-bottom: 5px; margin-left: 10px">
                             <el-link type="primary">流程名称</el-link>
-                            <el-button type="primary" icon="el-icon-edit" round
-                                       size="mini" @click="dataInfo">流程信息
+                            <el-button type="primary" icon="el-icon-document" size="mini" @click="dataInfo">流程信息
                             </el-button>
-                            <el-button type="success" icon="el-icon-check" round size="mini">保存</el-button>
+                            <el-button type="warning" icon="el-icon-warning-outline" size="mini" @click="help">帮助
+                            </el-button>
                         </div>
                     </el-col>
                 </el-row>
@@ -39,6 +39,8 @@
 
         <flow-info v-if="flowInfoVisible" ref="flowInfo" :lineList="lineList" :nodeList="nodeList"></flow-info>
 
+        <flow-help v-if="flowHelpVisible" ref="flowHelp"></flow-help>
+
     </div>
 
 </template>
@@ -49,11 +51,13 @@
     import flowNode from '@/components/flow/node'
     import flowTool from '@/components/flow/tool'
     import FlowInfo from '@/components/flow/info'
+    import FlowHelp from '@/components/flow/help'
 
     export default {
         data() {
             return {
                 flowInfoVisible: false,
+                flowHelpVisible: false,
                 index: 1,
                 // 默认设置参数
                 jsplumbSetting: {
@@ -104,19 +108,22 @@
                         id: 'nodeA',
                         name: '节点A',
                         left: '400px',
-                        top: '15px'
+                        top: '15px',
+                        ico: 'el-icon-user-solid'
                     },
                     {
                         id: 'nodeB',
                         name: '节点B',
                         left: '400px',
-                        top: '200px'
+                        top: '200px',
+                        ico: 'el-icon-goods'
                     },
                     {
                         id: 'nodeC',
                         name: '节点C',
                         left: '800px',
-                        top: '200px'
+                        top: '200px',
+                        ico: 'el-icon-present'
                     }
                 ],
                 lineList: [
@@ -131,7 +138,7 @@
             }
         },
         components: {
-            draggable, flowNode, flowTool, FlowInfo
+            draggable, flowNode, flowTool, FlowInfo, FlowHelp
         },
         mounted() {
             this.jsPlumbInit()
@@ -290,15 +297,17 @@
                 }
             },
             // 添加新的节点
-            addNode(evt) {
-                console.log('添加节点', evt)
+            addNode(evt, nodeMenu) {
+                console.log('添加节点', evt, nodeMenu)
+                let width = this.$refs.flowTool.$el.clientWidth
                 const index = this.index++
                 let nodeId = 'node' + index
                 this.nodeList.push({
                     id: 'node' + index,
                     name: '节点' + index,
-                    left: evt.originalEvent.layerX + 'px',
-                    top: evt.originalEvent.layerY + 'px'
+                    left: evt.originalEvent.layerX - width + 'px',
+                    top: evt.originalEvent.clientY - 50 + 'px',
+                    ico: nodeMenu.ico
                 })
                 this.$nextTick(function () {
 
@@ -363,6 +372,13 @@
                 this.$nextTick(function () {
                     this.$refs.flowInfo.init()
                 })
+            },
+            // 帮助
+            help() {
+                this.flowHelpVisible = true
+                this.$nextTick(function () {
+                    this.$refs.flowHelp.init()
+                })
             }
         }
     }
@@ -372,10 +388,9 @@
     #flowContainer {
         background-image: linear-gradient(90deg, rgba(0, 0, 0, 0.15) 10%, rgba(0, 0, 0, 0) 10%), linear-gradient(rgba(0, 0, 0, 0.15) 10%, rgba(0, 0, 0, 0) 10%);
         background-size: 10px 10px;
-        height: 445px;
+        height: 500px;
         background-color: rgb(251, 251, 251);
         /*background-color: #42b983;*/
         position: relative;
     }
-
 </style>

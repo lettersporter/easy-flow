@@ -7,7 +7,8 @@
             @mouseup="changeNodeSite"
     >
         <div class="flow-node-header">
-            <img src="@/assets/node-img.png" class="flow-node-drag">
+            <!-- <img src="@/assets/node-img.png" class="flow-node-drag">-->
+            <i :class="nodeClass"></i>
             <div style="position: absolute;top: 0px;right: 0px;line-height: 25px" v-show="mouseEnter">
                 <a href="#" style="" @click="editNode"><img src="@/assets/edit.png"></a>&nbsp;
                 <a href="#" style="" @click="deleteNode"><img src="@/assets/delete.png"></a> &nbsp;
@@ -43,6 +44,12 @@
                         backgroundColor: 'transparent'
                     }
                 }
+            },
+            nodeClass() {
+                var nodeclass = {}
+                nodeclass[this.node.ico] = true
+                nodeclass['flow-node-drag'] = true
+                return nodeclass
             }
         },
         methods: {
@@ -102,7 +109,8 @@
     }
 
     .flow-node-body {
-        background-color: beige;
+        /*background-color: beige;*/
+        background-color: white;
         text-align: center;
         cursor: pointer;
         height: 25px;
@@ -110,4 +118,5 @@
         border-bottom-left-radius: 6px;
         border-bottom-right-radius: 6px;
     }
+
 </style>

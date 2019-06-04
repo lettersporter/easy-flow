@@ -1,18 +1,5 @@
 <template>
     <div style="background-color: #66a6e0;" ref="tool">
-        <!--        <template v-for="tool in toolList">-->
-        <!--            <div class="flow-tool-menu">{{tool.name}}</div>-->
-        <!--            <template v-for="son in  tool.children">-->
-        <!--                <draggable @end="addNode">-->
-        <!--                    <div class="flow-tool-submenu">-->
-        <!--                        <div style="vertical-align: middle;">-->
-        <!--                            <img src="@/assets/node-timer.png">&nbsp;{{son.name}}-->
-        <!--                        </div>-->
-        <!--                    </div>-->
-        <!--                </draggable>-->
-        <!--            </template>-->
-        <!--        </template>-->
-
         <el-menu>
             <el-submenu :index="menu.type+index" v-for="(menu,index)  in  menuList" :key="menu.type+index">
                 <template slot="title">
@@ -23,7 +10,8 @@
                 <el-menu-item-group>
 
                     <draggable @end="addNode" v-for="(son,i) in menu.children" :key="son.type+i">
-                        <el-menu-item :index="son.type+i"><i :class="son.ico"></i>{{son.name}}</el-menu-item>
+                        <el-menu-item :index="son.type+i" :type="son.type"><i :class="son.ico"></i>{{son.name}}
+                        </el-menu-item>
                     </draggable>
 
                 </el-menu-item-group>
@@ -78,9 +66,22 @@
             draggable
         },
         methods: {
+            // 更具类型获取菜单
+            getMenu(type) {
+                for (var i = 0; i < this.menuList.length; i++) {
+                    let children = this.menuList[i].children;
+                    for (var j = 0; j < children.length; j++) {
+                        let son = children[j]
+                        if (son.type === type) {
+                            return son
+                        }
+                    }
+                }
+            },
             // 添加节点
             addNode(evt, e) {
-                this.$emit('addNode', evt)
+                let nodeMenu = this.getMenu(evt.originalEvent.srcElement.type)
+                this.$emit('addNode', evt, nodeMenu)
             }
         }
     }

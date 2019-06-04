@@ -13,9 +13,6 @@
                                        size="mini" @click="dataInfo">流程信息
                             </el-button>
                             <el-button type="success" icon="el-icon-check" round size="mini">保存</el-button>
-                            <el-button type="info" icon="el-icon-message" round size="mini"></el-button>
-                            <el-button type="warning" icon="el-icon-star-off" round size="mini"></el-button>
-                            <el-button type="danger" icon="el-icon-delete" round size="mini"></el-button>
                         </div>
                     </el-col>
                 </el-row>

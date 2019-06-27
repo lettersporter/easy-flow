@@ -1,6 +1,6 @@
 <template>
     <div style="background-color: #66a6e0;" ref="tool">
-        <el-menu>
+        <el-menu :default-openeds="defaultOpeneds">
             <el-submenu :index="menu.type+index" v-for="(menu,index)  in  menuList" :key="menu.type+index">
                 <template slot="title">
                     <i :class="menu.ico"></i>
@@ -26,36 +26,37 @@
     export default {
         data() {
             return {
+                defaultOpeneds:['group0','group1'],
                 menuList: [
                     {
                         type: 'group',
                         name: '开始节点',
-                        ico: 'el-icon-coffee',
+                        ico: 'el-icon-video-play',
                         children: [
                             {
                                 type: 'timer',
                                 name: '定时器',
-                                ico: 'el-icon-ice-drink',
+                                ico: 'el-icon-time',
                             }, {
                                 type: 'task',
                                 name: '定时任务',
-                                ico: 'el-icon-milk-tea',
+                                ico: 'el-icon-odometer',
                             }
                         ]
                     },
                     {
                         type: 'group',
                         name: '结束节点',
-                        ico: 'el-icon-lollipop',
+                        ico: 'el-icon-video-pause',
                         children: [
                             {
                                 type: 'end',
                                 name: '结束',
-                                ico: 'el-icon-grape',
+                                ico: 'el-icon-caret-right',
                             }, {
                                 type: 'over',
                                 name: '清理',
-                                ico: 'el-icon-apple',
+                                ico: 'el-icon-shopping-cart-full',
                             }
                         ]
                     }

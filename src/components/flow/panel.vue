@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div v-if="easyFlowVisible">
         <el-row>
             <el-col :span="3" ref="flowTool">
                 <flowTool @addNode="addNode"></flowTool>
@@ -13,6 +13,7 @@
                             </el-button>
                             <el-button type="warning" icon="el-icon-warning-outline" size="mini" @click="help">帮助
                             </el-button>
+                            <el-button type="primary" @click="dataReload" size="mini" icon="el-icon-refresh">重新载入</el-button>
                         </div>
                     </el-col>
                 </el-row>
@@ -40,7 +41,6 @@
         <flow-info v-if="flowInfoVisible" ref="flowInfo" :lineList="lineList" :nodeList="nodeList"></flow-info>
 
         <flow-help v-if="flowHelpVisible" ref="flowHelp"></flow-help>
-
     </div>
 
 </template>
@@ -52,10 +52,15 @@
     import flowTool from '@/components/flow/tool'
     import FlowInfo from '@/components/flow/info'
     import FlowHelp from '@/components/flow/help'
+    import lodash from 'lodash'
+    import {getData} from './data'
 
     export default {
+        name: "easyFlow",
         data() {
             return {
+                jsPlumb: null,// jsPlumb 实例
+                easyFlowVisible: true,
                 flowInfoVisible: false,
                 flowHelpVisible: false,
                 index: 1,
@@ -141,33 +146,36 @@
             draggable, flowNode, flowTool, FlowInfo, FlowHelp
         },
         mounted() {
-            this.jsPlumbInit()
+            this.jsPlumb = jsPlumb.getInstance()
+            this.$nextTick(()=>{
+                this.jsPlumbInit()
+            })
         },
         methods: {
             jsPlumbInit() {
                 const _this = this
-                jsPlumb.ready(function () {
+                this.jsPlumb.ready(function () {
 
                     // 导入默认配置
-                    jsPlumb.importDefaults(_this.jsplumbSetting)
+                    _this.jsPlumb.importDefaults(_this.jsplumbSetting)
                     // 初始化节点
                     _this.loadEasyFlow()
 
                     // 单点击了连接线,
-                    jsPlumb.bind('click', function (conn, originalEvent) {
+                    _this.jsPlumb.bind('click', function (conn, originalEvent) {
                         console.log("click", conn)
 
-                        _this.$confirm('确定删除所点击的链接吗?', '提示', {
+                        _this.$confirm('确定删除所点击的线吗?', '提示', {
                             confirmButtonText: '确定',
                             cancelButtonText: '取消',
                             type: 'warning'
                         }).then(() => {
-                            jsPlumb.deleteConnection(conn)
+                            _this.jsPlumb.deleteConnection(conn)
                         }).catch(() => {
                         })
                     })
                     // 连线
-                    jsPlumb.bind("connection", function (evt) {
+                    _this.jsPlumb.bind("connection", function (evt) {
                         console.log('connection', evt)
                         let from = evt.sourceId
                         let to = evt.targetId
@@ -180,13 +188,13 @@
                     })
 
                     // 删除连线
-                    jsPlumb.bind("connectionDetached", function (evt) {
+                    _this.jsPlumb.bind("connectionDetached", function (evt) {
                         console.log('connectionDetached', evt)
                         _this.deleteLine(evt.sourceId, evt.targetId)
                     })
 
                     // 改变线的连接节点
-                    jsPlumb.bind("connectionMoved", function (evt) {
+                    _this.jsPlumb.bind("connectionMoved", function (evt) {
                         console.log('connectionMoved', evt)
                         _this.changeLine(evt.originalSourceId, evt.originalTargetId)
                     })
@@ -202,13 +210,13 @@
                     // })
 
                     // contextmenu
-                    jsPlumb.bind("contextmenu", function (evt) {
+                    _this.jsPlumb.bind("contextmenu", function (evt) {
                         console.log('contextmenu', evt)
                     })
 
 
                     // beforeDrop
-                    jsPlumb.bind("beforeDrop", function (evt) {
+                    _this.jsPlumb.bind("beforeDrop", function (evt) {
                         console.log('beforeDrop', evt)
                         let from = evt.sourceId
                         let to = evt.targetId
@@ -228,7 +236,7 @@
                     })
 
                     // beforeDetach
-                    jsPlumb.bind("beforeDetach", function (evt) {
+                    _this.jsPlumb.bind("beforeDetach", function (evt) {
                         console.log('beforeDetach', evt)
                     })
                 })
@@ -240,9 +248,9 @@
                 for (var i = 0; i < this.nodeList.length; i++) {
                     let node = this.nodeList[i]
                     // 设置源点，可以拖出线连接其他节点
-                    jsPlumb.makeSource(node.id, this.jsplumbSourceOptions)
+                    this.jsPlumb.makeSource(node.id, this.jsplumbSourceOptions)
                     // // 设置目标点，其他源点拖出的线可以连接该节点
-                    jsPlumb.makeTarget(node.id, this.jsplumbTargetOptions)
+                    this.jsPlumb.makeTarget(node.id, this.jsplumbTargetOptions)
                     // jsPlumb.addEndpoint(node.id)
                     // 设置可拖拽
                     // jsPlumb.draggable(node.id, {
@@ -250,7 +258,7 @@
                     //     grid: [10, 10]
                     // })
 
-                    jsPlumb.draggable(node.id, {
+                    this.jsPlumb.draggable(node.id, {
                         containment: 'parent'
                     })
 
@@ -260,7 +268,7 @@
                 // 初始化连线
                 for (var i = 0; i < this.lineList.length; i++) {
                     let line = this.lineList[i]
-                    jsPlumb.connect({
+                    this.jsPlumb.connect({
                         source: line.from,
                         target: line.to,
                     }, this.jsplumbConnectOptions)
@@ -311,11 +319,11 @@
                 })
                 this.$nextTick(function () {
 
-                    jsPlumb.makeSource(nodeId, this.jsplumbSourceOptions)
+                    this.jsPlumb.makeSource(nodeId, this.jsplumbSourceOptions)
 
-                    jsPlumb.makeTarget(nodeId, this.jsplumbTargetOptions)
+                    this.jsPlumb.makeTarget(nodeId, this.jsplumbTargetOptions)
 
-                    jsPlumb.draggable(nodeId, {
+                    this.jsPlumb.draggable(nodeId, {
                         containment: 'parent'
                     })
 
@@ -346,7 +354,8 @@
                 this.$confirm('确定要删除节点' + nodeId + '?', '提示', {
                     confirmButtonText: '确定',
                     cancelButtonText: '取消',
-                    type: 'warning'
+                    type: 'warning',
+                    closeOnClickModal: false
                 }).then(() => {
 
                     this.nodeList = this.nodeList.filter(function (node) {
@@ -354,7 +363,7 @@
                     })
 
                     this.$nextTick(function () {
-                        jsPlumb.removeAllEndpoints(nodeId);
+                        this.jsPlumb.removeAllEndpoints(nodeId);
                     })
                 }).catch(() => {
                 })
@@ -378,6 +387,26 @@
                 this.flowHelpVisible = true
                 this.$nextTick(function () {
                     this.$refs.flowHelp.init()
+                })
+            },
+            // 数据重新载入
+            dataReload() {
+                this.easyFlowVisible = false
+                this.nodeList = []
+                this.lineList = []
+                this.$nextTick(() => {
+                    // 这里模拟后台获取数据、然后加载
+                    let data = getData()
+                    data = lodash.cloneDeep(data)
+                    this.easyFlowVisible = true
+                    this.nodeList = data.nodeList
+                    this.lineList = data.lineList
+                    this.$nextTick(() => {
+                        this.jsPlumb = jsPlumb.getInstance()
+                        this.$nextTick(() => {
+                            this.jsPlumbInit()
+                        })
+                    })
                 })
             }
         }

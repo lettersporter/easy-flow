@@ -2,6 +2,8 @@
 
 > 基于VUE+ElementUI+JsPlumb的流程设计器
 
+![](https://gitee.com/xiaoka2017/easy-flow/raw/master/src/assets/演示.gif)
+
 ![](https://gitee.com/xiaoka2017/resource/raw/master/easy-flow/1.png)
 
 ![](https://gitee.com/xiaoka2017/resource/raw/master/easy-flow/2.png)

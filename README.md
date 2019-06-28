@@ -9,6 +9,8 @@
 
 ![](https://gitee.com/xiaoka2017/resource/raw/master/easy-flow/2.png)
 
+![](https://gitee.com/xiaoka2017/resource/raw/master/easy-flow/4.png)
+
 
 ## 项目介绍
 `easy-flow` 基于VUE+ElementUI+JsPlumb的流程设计器，通过 vuedraggable 插件来实现左侧菜单的拖拽，拖拽结束后回调end方法,

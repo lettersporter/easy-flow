@@ -1,14 +1,19 @@
 # easy-flow
-
-> 基于VUE+ElementUI+JsPlumb的流程设计器
-
-![](https://gitee.com/xiaoka2017/easy-flow/raw/master/src/assets/演示.gif)
+> 效果图
 
 ![](https://gitee.com/xiaoka2017/resource/raw/master/easy-flow/1.png)
 
-![](https://gitee.com/xiaoka2017/resource/raw/master/easy-flow/2.png)
 
 ![](https://gitee.com/xiaoka2017/resource/raw/master/easy-flow/3.png)
+
+
+![](https://gitee.com/xiaoka2017/resource/raw/master/easy-flow/2.png)
+
+
+## 项目介绍
+`easy-flow` 基于VUE+ElementUI+JsPlumb的流程设计器，通过 vuedraggable 插件来实现左侧菜单的拖拽，拖拽结束后回调end方法,
+根据鼠标所在的位置添加一个节点信息，使用jsplumb来管理该节点，设置该节点可拖拽、连线 并注册相关的事件。
+
 
 ## 功能
 * 支持拖拽添加节点
@@ -16,6 +21,7 @@
 * 不支持节点线连接自己
 * 不支持节点A与节点B之间线互连
 * 点击线进行删除
+* 支持给定数据加载流程图
 
 ## 节点数据格式
 ``` json
@@ -26,21 +32,24 @@
         "name": "节点A",
         "left": "400px",
         "top": "15px",
-        "ico": "el-icon-user-solid"
+        "ico": "el-icon-user-solid",
+        "show":true
     },
     {
         "id": "nodeB",
         "name": "节点B",
         "left": "400px",
         "top": "200px",
-        "ico": "el-icon-goods"
+        "ico": "el-icon-goods",
+        "show":true
     },
     {
         "id": "nodeC",
         "name": "节点C",
         "left": "800px",
         "top": "200px",
-        "ico": "el-icon-present"
+        "ico": "el-icon-present",
+        "show":true
     }
 ]
 
@@ -53,6 +62,7 @@
 |  left  |   节点在页面上的X坐标      |
 |  top  |   节点在页面上的Y坐标      |
 |  ico  |   节点显示的图标      |
+|  show  |   为了解决节点删除问题      |
 
 
 
@@ -104,6 +114,5 @@ npm run dev
 * 节点图标自定义
 * 节点样式自定义
 * 提供保存JSON格式功能
-* 提供根据JSON数据加载功能
 * 提供Java版本数据解析工具包
 > 目前正在开发中，功能还未完善

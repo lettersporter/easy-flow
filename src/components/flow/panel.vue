@@ -8,12 +8,12 @@
                 <el-row>
                     <el-col :span="24">
                         <div style="margin-bottom: 5px; margin-left: 10px">
-                            <el-link type="primary">流程名称</el-link>
-                            <el-button type="primary" icon="el-icon-document" size="mini" @click="dataInfo">流程信息
+                            <el-link type="primary">{{data.name}}</el-link>
+                            <el-button type="info" icon="el-icon-document" size="mini" @click="dataInfo">流程信息
                             </el-button>
-                            <el-button type="warning" icon="el-icon-warning-outline" size="mini" @click="help">帮助
-                            </el-button>
-                            <el-button type="primary" @click="dataReload" size="mini" icon="el-icon-refresh">重新载入</el-button>
+                            <el-button type="primary" @click="dataReloadA" size="mini" icon="el-icon-refresh">切换流程A</el-button>
+                            <el-button type="success" @click="dataReloadB" size="mini" icon="el-icon-refresh">切换流程B</el-button>
+                            <el-button type="warning" @click="dataReloadC" size="mini" icon="el-icon-refresh">切换流程C</el-button>
                         </div>
                     </el-col>
                 </el-row>
@@ -21,7 +21,7 @@
                     <el-col :span="24">
                         <!--画布-->
                         <div id="flowContainer" class="container">
-                            <template v-for="node in nodeList">
+                            <template v-for="node in data.nodeList">
                                 <flow-node
                                         v-show="node.show"
                                         :id="node.id"
@@ -39,9 +39,7 @@
             </el-col>
         </el-row>
 
-        <flow-info v-if="flowInfoVisible" ref="flowInfo" :lineList="lineList" :nodeList="nodeList"></flow-info>
-
-        <flow-help v-if="flowHelpVisible" ref="flowHelp"></flow-help>
+        <flow-info v-if="flowInfoVisible" ref="flowInfo" :data="data"></flow-info>
     </div>
 
 </template>
@@ -52,18 +50,19 @@
     import flowNode from '@/components/flow/node'
     import flowTool from '@/components/flow/tool'
     import FlowInfo from '@/components/flow/info'
-    import FlowHelp from '@/components/flow/help'
     import lodash from 'lodash'
-    import {getData} from './data'
+    import {getDataA} from './data_A'
+    import {getDataB} from './data_B'
+    import {getDataC} from './data_C'
 
     export default {
         name: "easyFlow",
         data() {
             return {
+
                 jsPlumb: null,// jsPlumb 实例
                 easyFlowVisible: true,
                 flowInfoVisible: false,
-                flowHelpVisible: false,
                 index: 1,
                 // 默认设置参数
                 jsplumbSetting: {
@@ -109,50 +108,19 @@
                 },
                 // 是否加载完毕
                 loadEasyFlowFinish: false,
-                nodeList: [
-                    {
-                        id: 'nodeA',
-                        name: '节点A',
-                        left: '400px',
-                        top: '15px',
-                        ico: 'el-icon-user-solid',
-                        show: true
-                    },
-                    {
-                        id: 'nodeB',
-                        name: '节点B',
-                        left: '400px',
-                        top: '200px',
-                        ico: 'el-icon-goods',
-                        show: true
-                    },
-                    {
-                        id: 'nodeC',
-                        name: '节点C',
-                        left: '800px',
-                        top: '200px',
-                        ico: 'el-icon-present',
-                        show: true
-                    }
-                ],
-                lineList: [
-                    {
-                        from: 'nodeA',
-                        to: 'nodeB'
-                    }, {
-                        from: 'nodeB',
-                        to: 'nodeC'
-                    }
-                ]
+                // 数据
+                data:  {
+
+                }
             }
         },
         components: {
-            draggable, flowNode, flowTool, FlowInfo, FlowHelp
+            draggable, flowNode, flowTool, FlowInfo
         },
         mounted() {
             this.jsPlumb = jsPlumb.getInstance()
             this.$nextTick(()=>{
-                this.jsPlumbInit()
+                this.dataReloadA()
             })
         },
         methods: {
@@ -251,8 +219,8 @@
             loadEasyFlow() {
 
                 // 初始化节点
-                for (var i = 0; i < this.nodeList.length; i++) {
-                    let node = this.nodeList[i]
+                for (var i = 0; i < this.data.nodeList.length; i++) {
+                    let node = this.data.nodeList[i]
                     // 设置源点，可以拖出线连接其他节点
                     this.jsPlumb.makeSource(node.id, this.jsplumbSourceOptions)
                     // // 设置目标点，其他源点拖出的线可以连接该节点
@@ -272,8 +240,8 @@
                 }
 
                 // 初始化连线
-                for (var i = 0; i < this.lineList.length; i++) {
-                    let line = this.lineList[i]
+                for (var i = 0; i < this.data.lineList.length; i++) {
+                    let line = this.data.lineList[i]
                     this.jsPlumb.connect({
                         source: line.from,
                         target: line.to,
@@ -292,7 +260,7 @@
             },
             // 删除线
             deleteLine(from, to) {
-                this.lineList = this.lineList.filter(function (line) {
+                this.data.lineList = this.data.lineList.filter(function (line) {
                     return line.from !== from && line.to !== to
                 })
             },
@@ -302,8 +270,8 @@
             },
             // 改变节点的位置
             changeNodeSite(data) {
-                for (var i = 0; i < this.nodeList.length; i++) {
-                    let node = this.nodeList[i]
+                for (var i = 0; i < this.data.nodeList.length; i++) {
+                    let node = this.data.nodeList[i]
                     if (node.id === data.nodeId) {
                         node.left = data.left
                         node.top = data.top
@@ -316,7 +284,7 @@
                 let width = this.$refs.flowTool.$el.clientWidth
                 const index = this.index++
                 let nodeId = 'node' + index
-                this.nodeList.push({
+                this.data.nodeList.push({
                     id: 'node' + index,
                     name: '节点' + index,
                     left: evt.originalEvent.layerX - width + 'px',
@@ -338,8 +306,8 @@
             },
             // 是否具有该线
             hasLine(from, to) {
-                for (var i = 0; i < this.lineList.length; i++) {
-                    var line = this.lineList[i]
+                for (var i = 0; i < this.data.lineList.length; i++) {
+                    var line = this.data.lineList[i]
                     if (line.from === from && line.to === to) {
                         return true
                     }
@@ -365,7 +333,7 @@
                     closeOnClickModal: false
                 }).then(() => {
 
-                    this.nodeList =  this.nodeList.filter(function (node) {
+                    this.data.nodeList =  this.data.nodeList.filter(function (node) {
 
                         // return node.id !== nodeId
                         if (node.id === nodeId){
@@ -388,6 +356,7 @@
                     type: 'success',
                     message: `你可以在这里弹个页面进行节点${nodeId}信息修改!`
                 });
+
             },
             // 流程数据信息
             dataInfo() {
@@ -396,25 +365,15 @@
                     this.$refs.flowInfo.init()
                 })
             },
-            // 帮助
-            help() {
-                this.flowHelpVisible = true
-                this.$nextTick(function () {
-                    this.$refs.flowHelp.init()
-                })
-            },
-            // 数据重新载入
-            dataReload() {
+            dataReload(data){
                 this.easyFlowVisible = false
-                this.nodeList = []
-                this.lineList = []
+                this.data.nodeList = []
+                this.data.lineList = []
                 this.$nextTick(() => {
                     // 这里模拟后台获取数据、然后加载
-                    let data = getData()
                     data = lodash.cloneDeep(data)
                     this.easyFlowVisible = true
-                    this.nodeList = data.nodeList
-                    this.lineList = data.lineList
+                    this.data = data
                     this.$nextTick(() => {
                         this.jsPlumb = jsPlumb.getInstance()
                         this.$nextTick(() => {
@@ -422,6 +381,16 @@
                         })
                     })
                 })
+            },
+            // 数据重新载入
+            dataReloadA() {
+                this.dataReload(getDataA())
+            },
+            dataReloadB() {
+                this.dataReload(getDataB())
+            },
+            dataReloadC() {
+                this.dataReload(getDataC())
             }
         }
     }

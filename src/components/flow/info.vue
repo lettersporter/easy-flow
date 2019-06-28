@@ -2,26 +2,13 @@
     <el-dialog
             title="流程数据信息"
             :visible.sync="dialogVisible"
+            width="70%"
     >
-        <el-row>
-            <el-col :span="12">
-                <el-link type="primary">连线信息</el-link>
-                <codemirror
-                        :value="flowLineData"
-                        :options="options"
-                        class="code"
-                ></codemirror>
-            </el-col>
-
-            <el-col :span="12">
-                <el-link type="success">节点信息</el-link>
-                <codemirror
-                        :value="flowNodeData"
-                        :options="options"
-                        class="code"
-                ></codemirror>
-            </el-col>
-        </el-row>
+        <codemirror
+                :value="flowData"
+                :options="options"
+                class="code"
+        ></codemirror>
 
         <span slot="footer" class="dialog-footer">
   </span>
@@ -35,8 +22,7 @@
 
     export default {
         props: {
-            lineList: Array,
-            nodeList: Array
+            data: Object,
         },
         data() {
             return {
@@ -51,11 +37,8 @@
             codemirror
         },
         computed: {
-            flowNodeData() {
-                return JSON.stringify(this.nodeList, null, 4).toString()
-            },
-            flowLineData() {
-                return JSON.stringify(this.lineList, null, 4).toString()
+            flowData() {
+                return JSON.stringify(this.data, null, 4).toString()
             }
         },
         methods: {

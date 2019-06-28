@@ -30,38 +30,55 @@
 * 鼠标移动到画板中的节点上，节点的右上角出现 【删除】、【编辑】图标，点击对应的图标可进行删除、编辑操作
 * 节点分为2部分，图标在左上角侧，文字在下侧，鼠标从图标上可以拖拽出连线，可以连接其他节点，拖动图标意外位置可以改变节点在页面的位置
 
-## 节点数据格式
+## 数据格式
 ``` json
 
-[
-    {
-        "id": "nodeA",
-        "name": "节点A",
-        "left": "400px",
-        "top": "15px",
-        "ico": "el-icon-user-solid",
-        "show":true
-    },
-    {
-        "id": "nodeB",
-        "name": "节点B",
-        "left": "400px",
-        "top": "200px",
-        "ico": "el-icon-goods",
-        "show":true
-    },
-    {
-        "id": "nodeC",
-        "name": "节点C",
-        "left": "800px",
-        "top": "200px",
-        "ico": "el-icon-present",
-        "show":true
-    }
-]
+{
+    name: '流程C',
+    nodeList: [
+        {
+            id: 'nodeA',
+            name: '流程C-节点A',
+            left: '400px',
+            top: '15px',
+            ico: 'el-icon-user-solid',
+            show: true
+        },
+        {
+            id: 'nodeB',
+            name: '流程C-节点B',
+            left: '400px',
+            top: '200px',
+            ico: 'el-icon-goods',
+            show: true
+        },
+        {
+            id: 'nodeC',
+            name: '流程C-节点C',
+            left: '400px',
+            top: '378px',
+            ico: 'el-icon-present',
+            show: true
+        }
+    ],
+    lineList: [
+        {
+            from: 'nodeA',
+            to: 'nodeB'
+        }, {
+            from: 'nodeB',
+            to: 'nodeC'
+        }
+    ]
+}
 
 ```
-## 参数说明
+## data 参数说明
+|    参数    |      描述      |
+| :--------: | :------------: |
+|  name  |     流程图名称      |
+
+## nodeList 参数说明
 |    参数    |      描述      |
 | :--------: | :------------: |
 |  id  |     标识唯一的节点、可以与业务ID相结合      |
@@ -72,21 +89,7 @@
 |  show  |   为了解决节点删除问题      |
 
 
-
-## 节点连线数据格式
-``` json
-[
-    {
-        "from": "nodeA",
-        "to": "nodeB"
-    },
-    {
-        "from": "nodeB",
-        "to": "nodeC"
-    }
-]
-```
-## 参数说明
+## lineList 参数说明
 |    参数    |      描述      |
 | :--------: | :------------: |
 |  from  |     连线的起始节点的ID      |

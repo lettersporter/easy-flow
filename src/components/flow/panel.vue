@@ -9,11 +9,11 @@
                     <el-col :span="24">
                         <div style="margin-bottom: 5px; margin-left: 10px">
                             <el-link type="primary">{{data.name}}</el-link>
-                            <el-button type="info" icon="el-icon-document" size="mini" @click="dataInfo">流程信息
-                            </el-button>
-                            <el-button type="primary" @click="dataReloadA" size="mini" icon="el-icon-refresh">切换流程A</el-button>
-                            <el-button type="success" @click="dataReloadB" size="mini" icon="el-icon-refresh">切换流程B</el-button>
-                            <el-button type="warning" @click="dataReloadC" size="mini" icon="el-icon-refresh">切换流程C</el-button>
+                            <el-button type="info" icon="el-icon-document"  @click="dataInfo">流程信息</el-button>
+                            <el-button type="primary" @click="dataReloadA" icon="el-icon-refresh">切换流程A</el-button>
+                            <el-button type="success" @click="dataReloadB" icon="el-icon-refresh">切换流程B</el-button>
+                            <el-button type="warning" @click="dataReloadC" icon="el-icon-refresh">切换流程C</el-button>
+                            <el-button type="warning" @click="changeLabel" icon="el-icon-refresh">设置线</el-button>
                         </div>
                     </el-col>
                 </el-row>
@@ -40,6 +40,8 @@
         </el-row>
 
         <flow-info v-if="flowInfoVisible" ref="flowInfo" :data="data"></flow-info>
+        <flow-node-form v-if="nodeFormVisible" ref="nodeForm"></flow-node-form>
+
     </div>
 
 </template>
@@ -50,6 +52,7 @@
     import flowNode from '@/components/flow/node'
     import flowTool from '@/components/flow/tool'
     import FlowInfo from '@/components/flow/info'
+    import FlowNodeForm from './node_form'
     import lodash from 'lodash'
     import {getDataA} from './data_A'
     import {getDataB} from './data_B'
@@ -63,6 +66,7 @@
                 jsPlumb: null,// jsPlumb 实例
                 easyFlowVisible: true,
                 flowInfoVisible: false,
+                nodeFormVisible: false,
                 index: 1,
                 // 默认设置参数
                 jsplumbSetting: {
@@ -115,7 +119,7 @@
             }
         },
         components: {
-            draggable, flowNode, flowTool, FlowInfo
+            draggable, flowNode, flowTool, FlowInfo,FlowNodeForm
         },
         mounted() {
             this.jsPlumb = jsPlumb.getInstance()
@@ -147,6 +151,7 @@
                             _this.jsPlumb.deleteConnection(conn)
                         }).catch(() => {
                         })
+
                     })
                     // 连线
                     _this.jsPlumb.bind("connection", function (evt) {
@@ -352,11 +357,10 @@
             },
             editNode(nodeId) {
                 console.log('编辑节点', nodeId)
-                this.$message({
-                    type: 'success',
-                    message: `你可以在这里弹个页面进行节点${nodeId}信息修改!`
-                });
-
+                this.nodeFormVisible = true
+                this.$nextTick(function () {
+                    this.$refs.nodeForm.init(this.data,nodeId)
+                })
             },
             // 流程数据信息
             dataInfo() {
@@ -391,6 +395,18 @@
             },
             dataReloadC() {
                 this.dataReload(getDataC())
+            },
+            changeLabel(){
+                var lines = this.jsPlumb.getConnections({
+                    source: 'nodeA',
+                    target: 'nodeB'
+                })
+                console.log(lines)
+                lines[0].setLabel({
+                    label: '   ',
+                    cssClass: 'labelClass'
+                })
+
             }
         }
     }
@@ -404,5 +420,18 @@
         background-color: rgb(251, 251, 251);
         /*background-color: #42b983;*/
         position: relative;
+    }
+
+    .labelClass {
+        background-color: white;
+        padding: 5px;
+        opacity: 0.7;
+        border: 1px solid #346789;
+        /*border-radius: 10px;*/
+        cursor: pointer;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
     }
 </style>

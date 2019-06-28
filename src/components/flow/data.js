@@ -4,27 +4,31 @@ var nodeList = [
         name: '我是另一个数据-节点A',
         left: '300px',
         top: '15px',
-        ico: 'el-icon-user-solid'
+        ico: 'el-icon-user-solid',
+        show: true
     },
     {
         id: 'nodeB',
         name: '我是另一个数据-节点B',
         left: '300px',
         top: '316px',
-        ico: 'el-icon-goods'
+        ico: 'el-icon-goods',
+        show: true
     },
     {
         id: 'nodeC',
         name: '我是另一个数据-节点C',
         left: '800px',
         top: '316px',
-        ico: 'el-icon-present'
+        ico: 'el-icon-present',
+        show: true
     },{
         id: 'nodeD',
         name: '我是另一个数据-节点D',
         left: '800px',
         top: '121px',
-        ico: 'el-icon-present'
+        ico: 'el-icon-present',
+        show: true
     }
 ]
 

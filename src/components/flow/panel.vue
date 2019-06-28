@@ -23,6 +23,7 @@
                         <div id="flowContainer" class="container">
                             <template v-for="node in nodeList">
                                 <flow-node
+                                        v-show="node.show"
                                         :id="node.id"
                                         :node="node"
                                         @deleteNode="deleteNode"
@@ -114,21 +115,24 @@
                         name: '节点A',
                         left: '400px',
                         top: '15px',
-                        ico: 'el-icon-user-solid'
+                        ico: 'el-icon-user-solid',
+                        show: true
                     },
                     {
                         id: 'nodeB',
                         name: '节点B',
                         left: '400px',
                         top: '200px',
-                        ico: 'el-icon-goods'
+                        ico: 'el-icon-goods',
+                        show: true
                     },
                     {
                         id: 'nodeC',
                         name: '节点C',
                         left: '800px',
                         top: '200px',
-                        ico: 'el-icon-present'
+                        ico: 'el-icon-present',
+                        show: true
                     }
                 ],
                 lineList: [
@@ -158,6 +162,8 @@
 
                     // 导入默认配置
                     _this.jsPlumb.importDefaults(_this.jsplumbSetting)
+                    // 会使整个jsPlumb立即重绘。
+                    _this.jsPlumb.setSuspendDrawing(false,true);
                     // 初始化节点
                     _this.loadEasyFlow()
 
@@ -177,8 +183,8 @@
                     // 连线
                     _this.jsPlumb.bind("connection", function (evt) {
                         console.log('connection', evt)
-                        let from = evt.sourceId
-                        let to = evt.targetId
+                        let from = evt.source.id
+                        let to = evt.target.id
                         if (_this.loadEasyFlowFinish) {
                             _this.lineList.push({
                                 from: from,
@@ -315,7 +321,8 @@
                     name: '节点' + index,
                     left: evt.originalEvent.layerX - width + 'px',
                     top: evt.originalEvent.clientY - 50 + 'px',
-                    ico: nodeMenu.ico
+                    ico: nodeMenu.ico,
+                    show: true
                 })
                 this.$nextTick(function () {
 
@@ -358,15 +365,22 @@
                     closeOnClickModal: false
                 }).then(() => {
 
-                    this.nodeList = this.nodeList.filter(function (node) {
-                        return node.id !== nodeId
+                    this.nodeList =  this.nodeList.filter(function (node) {
+
+                        // return node.id !== nodeId
+                        if (node.id === nodeId){
+                            node.show = false
+                        }
+                        return true
                     })
 
                     this.$nextTick(function () {
+                        console.log('删除'+nodeId)
                         this.jsPlumb.removeAllEndpoints(nodeId);
                     })
                 }).catch(() => {
                 })
+                return true
             },
             editNode(nodeId) {
                 console.log('编辑节点', nodeId)

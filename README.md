@@ -129,3 +129,6 @@ npm run dev
 
 ## github
 https://github.com/BiaoChengLiu/easy-flow
+
+## 协议
+符合项目package.json中使用的插件中规定的协议即可

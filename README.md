@@ -9,6 +9,8 @@
 
 ![](https://gitee.com/xiaoka2017/resource/raw/master/easy-flow/2.png)
 
+![](https://gitee.com/xiaoka2017/resource/raw/master/easy-flow/5.png)
+
 ![](https://gitee.com/xiaoka2017/resource/raw/master/easy-flow/4.png)
 
 

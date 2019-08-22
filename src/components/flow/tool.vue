@@ -2,20 +2,22 @@
     <div style="background-color: #66a6e0;" ref="tool">
         <el-menu :default-openeds="defaultOpeneds">
             <el-submenu :index="menu.type+index" v-for="(menu,index)  in  menuList" :key="menu.type+index">
+                <!--一级菜单名称、不可拖拽 -->
                 <template slot="title">
                     <i :class="menu.ico"></i>
                     <span>{{menu.name}}</span>
                 </template>
-
+                <!--一级菜单子菜单、可拖拽菜单-->
                 <el-menu-item-group>
-
-                    <draggable @end="addNode" v-for="(son,i) in menu.children" :key="son.type+i">
-                        <el-menu-item :index="son.type+i" :type="son.type"><i :class="son.ico"></i>{{son.name}}
+                    <draggable @end="addNode" v-model="menu.children" :options="draggableOptions">
+                        <el-menu-item v-for="(son,i) in menu.children"
+                                      :key="son.type+i"
+                                      :index="son.type+i"
+                                      :type="son.type">
+                            <i :class="son.ico"></i>{{son.name}}
                         </el-menu-item>
                     </draggable>
-
                 </el-menu-item-group>
-
             </el-submenu>
         </el-menu>
     </div>
@@ -23,10 +25,21 @@
 <script>
     import draggable from 'vuedraggable'
 
+    /**
+     * 参考 https://blog.csdn.net/zjiang1994/article/details/79809687
+     *
+     */
+    var mousePosition = {
+        left: -1,
+        top: -1
+    }
     export default {
         data() {
             return {
-                defaultOpeneds:['group0','group1'],
+                draggableOptions: {
+                    preventOnFilter: false
+                },
+                defaultOpeneds: ['group0', 'group1'],
                 menuList: [
                     {
                         type: 'group',
@@ -66,8 +79,23 @@
         components: {
             draggable
         },
+        created() {
+            /**
+             * 以下是为了解决在火狐浏览器上推拽时弹出tab页到搜索问题
+             * @param event
+             */
+            if (this.isFirefox()) {
+                document.body.ondrop = function (event) {
+                    // 解决火狐浏览器无法获取鼠标拖拽结束的坐标问题
+                    mousePosition.left = event.layerX
+                    mousePosition.top = event.clientY - 50
+                    event.preventDefault();
+                    event.stopPropagation();
+                }
+            }
+        },
         methods: {
-            // 更具类型获取菜单
+            // 根据类型获取左侧菜单对象
             getMenu(type) {
                 for (var i = 0; i < this.menuList.length; i++) {
                     let children = this.menuList[i].children;
@@ -82,7 +110,15 @@
             // 添加节点
             addNode(evt, e) {
                 let nodeMenu = this.getMenu(evt.originalEvent.srcElement.type)
-                this.$emit('addNode', evt, nodeMenu)
+                this.$emit('addNode', evt, nodeMenu, mousePosition)
+            },
+            // 是否是火狐浏览器
+            isFirefox() {
+                var userAgent = navigator.userAgent
+                if (userAgent.indexOf("Firefox") > -1) {
+                    return true
+                }
+                return false
             }
         }
     }

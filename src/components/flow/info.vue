@@ -4,12 +4,12 @@
             :visible.sync="dialogVisible"
             width="70%"
     >
+        <!--一个高亮显示的插件-->
         <codemirror
                 :value="flowData"
                 :options="options"
                 class="code"
         ></codemirror>
-
         <span slot="footer" class="dialog-footer">
   </span>
     </el-dialog>
@@ -37,6 +37,7 @@
             codemirror
         },
         computed: {
+            // 数据转json字符串格式化
             flowData() {
                 return JSON.stringify(this.data, null, 4).toString()
             }

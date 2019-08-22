@@ -16,7 +16,7 @@
     "lodash": "4.17.11",
     "vue": "^2.5.2",
     "vue-codemirror": "^4.0.6",
-    "vuedraggable": "2.19.2"
+    "vuedraggable": "2.23.0"
   },
   "devDependencies": {
     "autoprefixer": "^7.1.2",

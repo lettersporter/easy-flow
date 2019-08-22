@@ -9,7 +9,7 @@
                     <el-col :span="24">
                         <div style="margin-bottom: 5px; margin-left: 10px">
                             <el-link type="primary">{{data.name}}</el-link>
-                            <el-button type="info" icon="el-icon-document"  @click="dataInfo">流程信息</el-button>
+                            <el-button type="info" icon="el-icon-document" @click="dataInfo">流程信息</el-button>
                             <el-button type="primary" @click="dataReloadA" icon="el-icon-refresh">切换流程A</el-button>
                             <el-button type="success" @click="dataReloadB" icon="el-icon-refresh">切换流程B</el-button>
                             <el-button type="warning" @click="dataReloadC" icon="el-icon-refresh">切换流程C</el-button>
@@ -62,7 +62,6 @@
         name: "easyFlow",
         data() {
             return {
-
                 jsPlumb: null,// jsPlumb 实例
                 easyFlowVisible: true,
                 flowInfoVisible: false,
@@ -113,17 +112,30 @@
                 // 是否加载完毕
                 loadEasyFlowFinish: false,
                 // 数据
-                data:  {
-
-                }
+                data: {},
             }
         },
         components: {
-            draggable, flowNode, flowTool, FlowInfo,FlowNodeForm
+            draggable, flowNode, flowTool, FlowInfo, FlowNodeForm
         },
+        // created() {
+        //     document.body.ondrop = function (event) {
+        //         console.log("ondrop............")
+        //         console.log(event)
+        //
+        //         // left: evt.originalEvent.layerX - width + 'px',
+        //         // top: evt.originalEvent.clientY - 50 + 'px',
+        //
+        //         this.mousePosition.left = event.layerX
+        //         this.mousePosition.top = event.clientY
+        //
+        //         event.preventDefault();
+        //         event.stopPropagation();
+        //     }
+        // },
         mounted() {
             this.jsPlumb = jsPlumb.getInstance()
-            this.$nextTick(()=>{
+            this.$nextTick(() => {
                 this.dataReloadA()
             })
         },
@@ -135,7 +147,7 @@
                     // 导入默认配置
                     _this.jsPlumb.importDefaults(_this.jsplumbSetting)
                     // 会使整个jsPlumb立即重绘。
-                    _this.jsPlumb.setSuspendDrawing(false,true);
+                    _this.jsPlumb.setSuspendDrawing(false, true);
                     // 初始化节点
                     _this.loadEasyFlow()
 
@@ -197,6 +209,11 @@
                     // beforeDrop
                     _this.jsPlumb.bind("beforeDrop", function (evt) {
                         console.log('beforeDrop', evt)
+                        _this.$message.error('beforeDrop');
+                        _this.$message({
+                            message: '恭喜你，这是一条成功消息',
+                            type: 'success'
+                        });
                         let from = evt.sourceId
                         let to = evt.targetId
                         if (from === to) {
@@ -249,7 +266,7 @@
                     let line = this.data.lineList[i]
                     this.jsPlumb.connect({
                         source: line.from,
-                        target: line.to,
+                        target: line.to
                     }, this.jsplumbConnectOptions)
                 }
                 this.$nextTick(function () {
@@ -284,19 +301,28 @@
                 }
             },
             // 添加新的节点
-            addNode(evt, nodeMenu) {
+            addNode(evt, nodeMenu, mousePosition) {
                 console.log('添加节点', evt, nodeMenu)
                 let width = this.$refs.flowTool.$el.clientWidth
                 const index = this.index++
                 let nodeId = 'node' + index
-                this.data.nodeList.push({
+                var left = mousePosition.left
+                var top = mousePosition.top
+                if (mousePosition.left < 0) {
+                    left = evt.originalEvent.layerX - width
+                }
+                if (mousePosition.top < 0) {
+                    top = evt.originalEvent.clientY - 50
+                }
+                var node = {
                     id: 'node' + index,
                     name: '节点' + index,
-                    left: evt.originalEvent.layerX - width + 'px',
-                    top: evt.originalEvent.clientY - 50 + 'px',
+                    left: left + 'px',
+                    top: top + 'px',
                     ico: nodeMenu.ico,
                     show: true
-                })
+                }
+                this.data.nodeList.push(node)
                 this.$nextTick(function () {
 
                     this.jsPlumb.makeSource(nodeId, this.jsplumbSourceOptions)
@@ -338,17 +364,16 @@
                     closeOnClickModal: false
                 }).then(() => {
 
-                    this.data.nodeList =  this.data.nodeList.filter(function (node) {
+                    this.data.nodeList = this.data.nodeList.filter(function (node) {
 
                         // return node.id !== nodeId
-                        if (node.id === nodeId){
+                        if (node.id === nodeId) {
                             node.show = false
                         }
                         return true
                     })
-
                     this.$nextTick(function () {
-                        console.log('删除'+nodeId)
+                        console.log('删除' + nodeId)
                         this.jsPlumb.removeAllEndpoints(nodeId);
                     })
                 }).catch(() => {
@@ -359,7 +384,7 @@
                 console.log('编辑节点', nodeId)
                 this.nodeFormVisible = true
                 this.$nextTick(function () {
-                    this.$refs.nodeForm.init(this.data,nodeId)
+                    this.$refs.nodeForm.init(this.data, nodeId)
                 })
             },
             // 流程数据信息
@@ -369,7 +394,7 @@
                     this.$refs.flowInfo.init()
                 })
             },
-            dataReload(data){
+            dataReload(data) {
                 this.easyFlowVisible = false
                 this.data.nodeList = []
                 this.data.lineList = []
@@ -396,15 +421,14 @@
             dataReloadC() {
                 this.dataReload(getDataC())
             },
-            changeLabel(){
+            changeLabel() {
                 var lines = this.jsPlumb.getConnections({
                     source: 'nodeA',
                     target: 'nodeB'
                 })
-                console.log(lines)
                 lines[0].setLabel({
-                    label: '   ',
-                    cssClass: 'labelClass'
+                    label: 'admin',
+                    cssClass: 'labelClass a b'
                 })
 
             }

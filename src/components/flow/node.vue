@@ -7,13 +7,15 @@
             @mouseup="changeNodeSite"
     >
         <div class="flow-node-header">
-            <!-- <img src="@/assets/node-img.png" class="flow-node-drag">-->
+            <!--左上角的那个图标样式-->
             <i :class="nodeClass"></i>
+            <!--鼠标移入到节点中时右上角的【编辑】、【删除】 按钮-->
             <div style="position: absolute;top: 0px;right: 0px;line-height: 25px" v-show="mouseEnter">
                 <a href="#" style="" @click="editNode"><img src="@/assets/edit.png"></a>&nbsp;
                 <a href="#" style="" @click="deleteNode"><img src="@/assets/delete.png"></a> &nbsp;
             </div>
         </div>
+        <!--节点的正文部分-->
         <div class="flow-node-body">
             {{node.name}}
         </div>
@@ -71,6 +73,10 @@
             },
             // 鼠标移动后抬起
             changeNodeSite() {
+                // 避免抖动
+                if (this.node.left == this.$refs.node.style.left && this.node.top == this.$refs.node.style.top) {
+                    return;
+                }
                 this.$emit('changeNodeSite', {
                     nodeId: this.node.id,
                     left: this.$refs.node.style.left,

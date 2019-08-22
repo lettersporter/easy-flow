@@ -129,6 +129,10 @@ npm run dev
 * 提供Java版本数据解析工具包
 > 目前正在开发中，功能还未完善
 
+## 更新日志
+2019年08月22日
+* 修改火狐浏览器下不能够推拽问题
+
 ## github
 https://github.com/BiaoChengLiu/easy-flow
 

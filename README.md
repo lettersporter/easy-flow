@@ -1,5 +1,11 @@
 # easy-flow
-> 效果图
+
+## 演示地址
+> 感谢码云平台给了一个免费的Gitee Pages服务, 可能访问有点慢
+
+[演示地址](http://xiaoka2017.gitee.io/easy-flow/#)
+
+## 效果图
 
 ![](https://gitee.com/xiaoka2017/resource/raw/master/easy-flow/1.png)
 

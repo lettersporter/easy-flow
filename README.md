@@ -134,7 +134,7 @@ npm run dev
 * 修改IE 11.316版本下无法拖拽问题
 
 2019年08月22日
-* 修改火狐浏览器下不能够推拽问题
+* 修改火狐浏览器下不能够拖拽问题
 
 ## github
 https://github.com/BiaoChengLiu/easy-flow

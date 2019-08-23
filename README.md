@@ -3,7 +3,7 @@
 ## 演示地址
 > 感谢码云平台给了一个免费的Gitee Pages服务, 可能访问有点慢
 
-[演示地址](http://xiaoka2017.gitee.io/easy-flow/#)
+[演示地址](http://xiaoka2017.gitee.io/easy-flow/#?_blank)
 
 ## 效果图
 

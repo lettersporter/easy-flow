@@ -118,21 +118,6 @@
         components: {
             draggable, flowNode, flowTool, FlowInfo, FlowNodeForm
         },
-        // created() {
-        //     document.body.ondrop = function (event) {
-        //         console.log("ondrop............")
-        //         console.log(event)
-        //
-        //         // left: evt.originalEvent.layerX - width + 'px',
-        //         // top: evt.originalEvent.clientY - 50 + 'px',
-        //
-        //         this.mousePosition.left = event.layerX
-        //         this.mousePosition.top = event.clientY
-        //
-        //         event.preventDefault();
-        //         event.stopPropagation();
-        //     }
-        // },
         mounted() {
             this.jsPlumb = jsPlumb.getInstance()
             this.$nextTick(() => {

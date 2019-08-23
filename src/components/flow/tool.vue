@@ -9,11 +9,14 @@
                 </template>
                 <!--一级菜单子菜单、可拖拽菜单-->
                 <el-menu-item-group>
-                    <draggable @end="addNode" v-model="menu.children" :options="draggableOptions">
+                    <draggable @end="addNode" @choose="move" v-model="menu.children" :options="draggableOptions">
                         <el-menu-item v-for="(son,i) in menu.children"
                                       :key="son.type+i"
                                       :index="son.type+i"
-                                      :type="son.type">
+                                      :type="son.type"
+                                      :aaa="son.type"
+                                      :bbb="son.type"
+                        >
                             <i :class="son.ico"></i>{{son.name}}
                         </el-menu-item>
                     </draggable>
@@ -73,7 +76,8 @@
                             }
                         ]
                     }
-                ]
+                ],
+                nodeMenu: {}
             }
         },
         components: {
@@ -107,10 +111,13 @@
                     }
                 }
             },
+            move(evt) {
+                var attrs = evt.item.attributes
+                this.nodeMenu = this.getMenu(attrs.type.nodeValue)
+            },
             // 添加节点
             addNode(evt, e) {
-                let nodeMenu = this.getMenu(evt.originalEvent.srcElement.type)
-                this.$emit('addNode', evt, nodeMenu, mousePosition)
+                this.$emit('addNode', evt, this.nodeMenu, mousePosition)
             },
             // 是否是火狐浏览器
             isFirefox() {

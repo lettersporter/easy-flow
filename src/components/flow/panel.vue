@@ -66,7 +66,7 @@
                 easyFlowVisible: true,
                 flowInfoVisible: false,
                 nodeFormVisible: false,
-                index: 1,
+                index: 1000,
                 // 默认设置参数
                 jsplumbSetting: {
                     // 动态锚点、位置自适应
@@ -122,9 +122,15 @@
             this.jsPlumb = jsPlumb.getInstance()
             this.$nextTick(() => {
                 this.dataReloadA()
+                // this.dataReload(JSON.parse('"{\\n    \\"nodeList\\": [\\n        {\\n            \\"id\\": \\"node1\\",\\n            \\"name\\": \\"Test2\\",\\n            \\"left\\": \\"303px\\",\\n            \\"top\\": \\"58px\\",\\n            \\"ico\\": \\"el-icon-time\\",\\n            \\"show\\": true\\n        },\\n        {\\n            \\"id\\": \\"node2\\",\\n            \\"name\\": \\"节点2\\",\\n            \\"left\\": \\"678px\\",\\n            \\"top\\": \\"156px\\",\\n            \\"ico\\": \\"el-icon-caret-right\\",\\n            \\"show\\": true\\n        },\\n        {\\n            \\"id\\": \\"node3\\",\\n            \\"name\\": \\"节点3\\",\\n            \\"left\\": \\"743px\\",\\n            \\"top\\": \\"232px\\",\\n            \\"ico\\": \\"el-icon-caret-right\\",\\n            \\"show\\": true\\n        }\\n    ],\\n    \\"lineList\\": [\\n        {\\n            \\"from\\": \\"node1\\",\\n            \\"to\\": \\"node2\\"\\n        },\\n        {\\n            \\"from\\": \\"node1\\",\\n            \\"to\\": \\"node3\\"\\n        }\\n    ]\\n}"'))
             })
         },
         methods: {
+            getUUID() {
+                return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {
+                    return (c === 'x' ? (Math.random() * 16 | 0) : ('r&0x3' | '0x8')).toString(16)
+                })
+            },
             jsPlumbInit() {
                 const _this = this
                 this.jsPlumb.ready(function () {
@@ -289,7 +295,7 @@
             addNode(evt, nodeMenu, mousePosition) {
                 console.log('添加节点', evt, nodeMenu)
                 let width = this.$refs.flowTool.$el.clientWidth
-                const index = this.index++
+                const index = this.getUUID()
                 let nodeId = 'node' + index
                 var left = mousePosition.left
                 var top = mousePosition.top

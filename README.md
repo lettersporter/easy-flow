@@ -136,6 +136,9 @@ npm run dev
 > 目前正在开发中，功能还未完善
 
 ## 更新日志
+2019年11月25日
+* 修复加载数据时nodeId不唯一问题
+
 2019年08月23日
 * 修改IE 11.316版本下无法拖拽问题
 * 新增演示环境地址， [演示地址](http://xiaoka2017.gitee.io/easy-flow/#?_blank)
@@ -145,6 +148,9 @@ npm run dev
 
 ## github
 https://github.com/BiaoChengLiu/easy-flow
+
+## 联系方式
+QQ: 1537130693
 
 ## 协议
 符合项目package.json中使用的插件中规定的协议即可

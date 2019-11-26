@@ -1,7 +1,7 @@
 <template>
     <div style="background-color: #66a6e0;" ref="tool">
         <el-menu :default-openeds="defaultOpeneds">
-            <el-submenu :index="menu.type+index" v-for="(menu,index)  in  menuList" :key="menu.type+index">
+            <el-submenu :index="menu.id" v-for="menu  in  menuList" :key="menu.id">
                 <!--一级菜单名称、不可拖拽 -->
                 <template slot="title">
                     <i :class="menu.ico"></i>
@@ -10,12 +10,10 @@
                 <!--一级菜单子菜单、可拖拽菜单-->
                 <el-menu-item-group>
                     <draggable @end="addNode" @choose="move" v-model="menu.children" :options="draggableOptions">
-                        <el-menu-item v-for="(son,i) in menu.children"
-                                      :key="son.type+i"
-                                      :index="son.type+i"
+                        <el-menu-item v-for="son in menu.children"
+                                      :key="son.id"
+                                      :index="son.id"
                                       :type="son.type"
-                                      :aaa="son.type"
-                                      :bbb="son.type"
                         >
                             <i :class="son.ico"></i>{{son.name}}
                         </el-menu-item>
@@ -42,18 +40,22 @@
                 draggableOptions: {
                     preventOnFilter: false
                 },
-                defaultOpeneds: ['group0', 'group1'],
+                // 默认打开的左侧菜单的id
+                defaultOpeneds: ['1', '2'],
                 menuList: [
                     {
+                        id: '1',
                         type: 'group',
                         name: '开始节点',
                         ico: 'el-icon-video-play',
                         children: [
                             {
+                                id: '11',
                                 type: 'timer',
                                 name: '定时器',
                                 ico: 'el-icon-time',
                             }, {
+                                id: '12',
                                 type: 'task',
                                 name: '定时任务',
                                 ico: 'el-icon-odometer',
@@ -61,15 +63,18 @@
                         ]
                     },
                     {
+                        id: '2',
                         type: 'group',
                         name: '结束节点',
                         ico: 'el-icon-video-pause',
                         children: [
                             {
+                                id: '21',
                                 type: 'end',
                                 name: '结束',
                                 ico: 'el-icon-caret-right',
                             }, {
+                                id: '22',
                                 type: 'over',
                                 name: '清理',
                                 ico: 'el-icon-shopping-cart-full',

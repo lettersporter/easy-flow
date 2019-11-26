@@ -32,11 +32,7 @@ var data_A = {
     }, {
         from: 'nodeB',
         to: 'nodeC'
-    }, {
-        from: 'nodeC',
-        to: 'nodeD'
-    }
-    ]
+    }]
 }
 
 export function getDataA() {

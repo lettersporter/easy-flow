@@ -8,19 +8,19 @@
             <el-form-item label="名称">
                 <el-input v-model="node.name"></el-input>
             </el-form-item>
-            <el-form-item label="left">
+            <el-form-item label="left坐标">
                 <el-input v-model="node.left"></el-input>
             </el-form-item>
-            <el-form-item label="top">
+            <el-form-item label="top坐标">
                 <el-input v-model="node.top"></el-input>
             </el-form-item>
-            <el-form-item label="ico">
+            <el-form-item label="ico图标">
                 <el-input v-model="node.ico"></el-input>
             </el-form-item>
         </el-form>
         <span slot="footer" class="dialog-footer">
             <el-button @click="visible = false" icon="el-icon-close">取消</el-button>
-            <el-button type="primary" icon="el-icon-check"  @click="visible = false" >确定</el-button>
+            <el-button type="primary" icon="el-icon-check" @click="visible = false">确定</el-button>
         </span>
     </el-dialog>
 </template>
@@ -45,7 +45,3 @@
         }
     }
 </script>
-
-<style scoped>
-
-</style>

@@ -1,18 +1,18 @@
 <template>
     <div
             ref="node"
-            :style="flowNodeContainer"
-            @mouseenter="showDelete"
-            @mouseleave="hideDelete"
-            @mouseup="changeNodeSite"
+            :style="nodeContainerStyle"
+            @mouseenter="mouseEnter=true"
+            @mouseleave="mouseEnter=false"
+            @mouseup="changeNodePosition"
     >
         <div class="flow-node-header">
             <!--左上角的那个图标样式-->
-            <i :class="nodeClass"></i>
+            <i :class="nodeIcoClass"></i>
             <!--鼠标移入到节点中时右上角的【编辑】、【删除】 按钮-->
-            <div style="position: absolute;top: 0px;right: 0px;line-height: 25px" v-show="mouseEnter">
-                <a href="#" style="" @click="editNode"><img src="@/assets/edit.png"></a>&nbsp;
-                <a href="#" style="" @click="deleteNode"><img src="@/assets/delete.png"></a> &nbsp;
+            <div v-show="mouseEnter" class="flow-node-operate">
+                <a href="#" @click="editNode"><img src="@/assets/edit.png"></a>&nbsp;
+                <a href="#" @click="deleteNode"><img src="@/assets/delete.png"></a> &nbsp;
             </div>
         </div>
         <!--节点的正文部分-->
@@ -35,23 +35,22 @@
         },
         computed: {
             // 节点容器样式
-            flowNodeContainer: {
-                get() {
-                    return {
-                        position: 'absolute',
-                        width: '200px',
-                        top: this.node.top,
-                        left: this.node.left,
-                        boxShadow: this.mouseEnter ? '#66a6e0 0px 0px 12px 0px' : '',
-                        backgroundColor: 'transparent'
-                    }
+            nodeContainerStyle() {
+                return {
+                    position: 'absolute',
+                    width: '200px',
+                    top: this.node.top,
+                    left: this.node.left,
+                    boxShadow: this.mouseEnter ? '#66a6e0 0px 0px 12px 0px' : '',
+                    backgroundColor: 'transparent'
                 }
             },
-            nodeClass() {
-                var nodeclass = {}
-                nodeclass[this.node.ico] = true
-                nodeclass['flow-node-drag'] = true
-                return nodeclass
+            nodeIcoClass() {
+                var nodeIcoClass = {}
+                nodeIcoClass[this.node.ico] = true
+                // 添加该class可以推拽连线出来
+                nodeIcoClass['flow-node-drag'] = true
+                return nodeIcoClass
             }
         },
         methods: {
@@ -63,16 +62,8 @@
             editNode() {
                 this.$emit('editNode', this.node.id)
             },
-            // 鼠标进入
-            showDelete() {
-                this.mouseEnter = true
-            },
-            // 鼠标离开
-            hideDelete() {
-                this.mouseEnter = false
-            },
             // 鼠标移动后抬起
-            changeNodeSite() {
+            changeNodePosition() {
                 // 避免抖动
                 if (this.node.left == this.$refs.node.style.left && this.node.top == this.$refs.node.style.top) {
                     return;
@@ -88,11 +79,6 @@
 </script>
 
 <style>
-
-    .flow-node-drag {
-        width: 25px;
-        height: 25px;
-    }
 
     .flow-node-header {
         background-color: #66a6e0;
@@ -123,6 +109,14 @@
         line-height: 25px;
         border-bottom-left-radius: 6px;
         border-bottom-right-radius: 6px;
+    }
+
+    /* 修改、删除按钮样式*/
+    .flow-node-operate {
+        position: absolute;
+        top: 0px;
+        right: 0px;
+        line-height: 25px
     }
 
 </style>

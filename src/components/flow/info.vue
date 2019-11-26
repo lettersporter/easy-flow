@@ -6,12 +6,10 @@
     >
         <!--一个高亮显示的插件-->
         <codemirror
-                :value="flowData"
+                :value="flowJsonData"
                 :options="options"
                 class="code"
         ></codemirror>
-        <span slot="footer" class="dialog-footer">
-  </span>
     </el-dialog>
 </template>
 
@@ -37,8 +35,8 @@
             codemirror
         },
         computed: {
-            // 数据转json字符串格式化
-            flowData() {
+            flowJsonData() {
+                // 数据转json字符串格式化
                 return JSON.stringify(this.data, null, 4).toString()
             }
         },
@@ -49,7 +47,3 @@
         }
     }
 </script>
-
-<style scoped>
-
-</style>

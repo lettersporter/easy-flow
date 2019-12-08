@@ -26,14 +26,11 @@
 <script>
     import draggable from 'vuedraggable'
 
-    /**
-     * 参考 https://blog.csdn.net/zjiang1994/article/details/79809687
-     *
-     */
     var mousePosition = {
         left: -1,
         top: -1
     }
+
     export default {
         data() {
             return {
@@ -106,21 +103,21 @@
         methods: {
             // 根据类型获取左侧菜单对象
             getMenu(type) {
-                for (var i = 0; i < this.menuList.length; i++) {
+                for (let i = 0; i < this.menuList.length; i++) {
                     let children = this.menuList[i].children;
-                    for (var j = 0; j < children.length; j++) {
-                        let son = children[j]
-                        if (son.type === type) {
-                            return son
+                    for (let j = 0; j < children.length; j++) {
+                        if (children[j].type === type) {
+                            return children[j]
                         }
                     }
                 }
             },
+            // 拖拽开始时触发
             move(evt) {
-                var attrs = evt.item.attributes
-                this.nodeMenu = this.getMenu(attrs.type.nodeValue)
+                var type = evt.item.attributes.type.nodeValue
+                this.nodeMenu = this.getMenu(type)
             },
-            // 添加节点
+            // 拖拽结束时触发
             addNode(evt, e) {
                 this.$emit('addNode', evt, this.nodeMenu, mousePosition)
             },

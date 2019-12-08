@@ -34,6 +34,11 @@
             }
         },
         methods: {
+            /**
+             * 表单修改，这里可以根据传入的ID进行业务信息获取
+             * @param data
+             * @param id
+             */
             init(data, id) {
                 this.visible = true
                 data.nodeList.filter((node) => {

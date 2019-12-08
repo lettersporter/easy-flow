@@ -137,43 +137,44 @@
             },
             jsPlumbInit() {
                 const _this = this
-                this.jsPlumb.ready(function () {
+                this.jsPlumb.ready(() => {
                     // 导入默认配置
-                    _this.jsPlumb.importDefaults(_this.jsplumbSetting)
+                    this.jsPlumb.importDefaults(this.jsplumbSetting)
                     // 会使整个jsPlumb立即重绘。
-                    _this.jsPlumb.setSuspendDrawing(false, true);
+                    this.jsPlumb.setSuspendDrawing(false, true);
                     // 初始化节点
-                    _this.loadEasyFlow()
+                    this.loadEasyFlow()
                     // 单点击了连接线,
-                    _this.jsPlumb.bind('click', function (conn, originalEvent) {
-                        _this.$confirm('确定删除所点击的线吗?', '提示', {
+                    this.jsPlumb.bind('click', (conn, originalEvent) => {
+                        this.$confirm('确定删除所点击的线吗?', '提示', {
                             confirmButtonText: '确定',
                             cancelButtonText: '取消',
                             type: 'warning'
                         }).then(() => {
-                            _this.jsPlumb.deleteConnection(conn)
+                            this.jsPlumb.deleteConnection(conn)
                         }).catch(() => {
                         })
                     })
                     // 连线
-                    _this.jsPlumb.bind("connection", function (evt) {
+                    this.jsPlumb.bind("connection", (evt) => {
                         let from = evt.source.id
                         let to = evt.target.id
-                        if (_this.loadEasyFlowFinish) {
-                            _this.data.lineList.push({
+                        if (this.loadEasyFlowFinish) {
+                            this.data.lineList.push({
                                 from: from,
                                 to: to
                             })
                         }
                     })
-                    // 删除连线
-                    _this.jsPlumb.bind("connectionDetached", function (evt) {
-                        _this.deleteLine(evt.sourceId, evt.targetId)
+
+                    // 删除连线回调
+                    this.jsPlumb.bind("connectionDetached", (evt) => {
+                        this.deleteLine(evt.sourceId, evt.targetId)
                     })
 
                     // 改变线的连接节点
-                    _this.jsPlumb.bind("connectionMoved", function (evt) {
-                        _this.changeLine(evt.originalSourceId, evt.originalTargetId)
+                    this.jsPlumb.bind("connectionMoved", (evt) => {
+                        this.changeLine(evt.originalSourceId, evt.originalTargetId)
                     })
 
                     // 单击endpoint
@@ -187,35 +188,35 @@
                     // })
 
                     // contextmenu
-                    _this.jsPlumb.bind("contextmenu", function (evt) {
+                    this.jsPlumb.bind("contextmenu", (evt) => {
                         console.log('contextmenu', evt)
                     })
 
-                    // beforeDrop
-                    _this.jsPlumb.bind("beforeDrop", function (evt) {
+                    // 连线
+                    this.jsPlumb.bind("beforeDrop", (evt) => {
                         let from = evt.sourceId
                         let to = evt.targetId
                         if (from === to) {
-                            _this.$message.error('不能连接自己');
+                            this.$message.error('不能连接自己')
                             return false
                         }
-                        if (_this.hasLine(from, to)) {
-                            _this.$message.error('不能重复连线');
+                        if (this.hasLine(from, to)) {
+                            this.$message.error('不能重复连线')
                             return false
                         }
-                        if (_this.hashOppositeLine(from, to)) {
-                            _this.$message.error('不能回环');
+                        if (this.hashOppositeLine(from, to)) {
+                            this.$message.error('不能回环');
                             return false
                         }
-                        _this.$message({
+                        this.$message({
                             message: '连线成功',
                             type: 'success'
-                        });
+                        })
                         return true
                     })
 
                     // beforeDetach
-                    _this.jsPlumb.bind("beforeDetach", function (evt) {
+                    this.jsPlumb.bind("beforeDetach", (evt) => {
                         console.log('beforeDetach', evt)
                     })
                 })
@@ -270,38 +271,77 @@
                     }
                 }
             },
-            // 添加新的节点
+            /**
+             * 拖拽结束后添加新的节点
+             * @param evt
+             * @param nodeMenu 被添加的节点对象
+             * @param mousePosition 鼠标拖拽结束的坐标
+             */
             addNode(evt, nodeMenu, mousePosition) {
                 let width = this.$refs.nodeMenu.$el.clientWidth
-                const index = this.getUUID()
-                let nodeId = index
-                var left = mousePosition.left
-                var top = mousePosition.top
-                if (mousePosition.left < 0) {
+                let nodeId = this.getUUID(), left = mousePosition.left, top = mousePosition.top
+                if (left < 0) {
                     left = evt.originalEvent.layerX - width
                 }
-                if (mousePosition.top < 0) {
+                if (top < 0) {
                     top = evt.originalEvent.clientY - 50
                 }
                 var node = {
                     id: nodeId,
-                    name: index,
+                    name: nodeId,
                     left: left + 'px',
                     top: top + 'px',
                     ico: nodeMenu.ico,
                     show: true
                 }
+                /**
+                 * 这里可以进行业务判断、是否能够添加该节点
+                 */
                 this.data.nodeList.push(node)
                 this.$nextTick(function () {
-
                     this.jsPlumb.makeSource(nodeId, this.jsplumbSourceOptions)
-
                     this.jsPlumb.makeTarget(nodeId, this.jsplumbTargetOptions)
-
                     this.jsPlumb.draggable(nodeId, {
                         containment: 'parent'
                     })
-
+                })
+            },
+            /**
+             * 删除节点
+             * @param nodeId 被删除节点的ID
+             */
+            deleteNode(nodeId) {
+                this.$confirm('确定要删除节点' + nodeId + '?', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning',
+                    closeOnClickModal: false
+                }).then(() => {
+                    /**
+                     * 这里需要进行业务判断，是否可以删除
+                     */
+                    this.data.nodeList = this.data.nodeList.filter(function (node) {
+                        if (node.id === nodeId) {
+                            // 伪删除，将节点隐藏，否则会导致位置错位
+                            node.show = false
+                        }
+                        return true
+                    })
+                    this.$nextTick(function () {
+                        this.jsPlumb.removeAllEndpoints(nodeId);
+                    })
+                }).catch(() => {
+                })
+                return true
+            },
+            /**
+             * 编辑节点
+             * @param nodeId 被点击编辑的节点的ID
+             */
+            editNode(nodeId) {
+                this.nodeFormVisible = true
+                this.$nextTick(function () {
+                    this.$refs.nodeForm.init(this.data, nodeId)
                 })
             },
             // 是否具有该线
@@ -323,35 +363,6 @@
                 this.menu.curNodeId = nodeId
                 this.menu.left = evt.x + 'px'
                 this.menu.top = evt.y + 'px'
-            },
-            // 删除节点
-            deleteNode(nodeId) {
-                this.$confirm('确定要删除节点' + nodeId + '?', '提示', {
-                    confirmButtonText: '确定',
-                    cancelButtonText: '取消',
-                    type: 'warning',
-                    closeOnClickModal: false
-                }).then(() => {
-                    this.data.nodeList = this.data.nodeList.filter(function (node) {
-                        if (node.id === nodeId) {
-                            node.show = false
-                        }
-                        return true
-                    })
-                    this.$nextTick(function () {
-                        console.log('删除' + nodeId)
-                        this.jsPlumb.removeAllEndpoints(nodeId);
-                    })
-                }).catch(() => {
-                })
-                return true
-            },
-            editNode(nodeId) {
-                console.log('编辑节点', nodeId)
-                this.nodeFormVisible = true
-                this.$nextTick(function () {
-                    this.$refs.nodeForm.init(this.data, nodeId)
-                })
             },
             // 流程数据信息
             dataInfo() {
@@ -398,7 +409,6 @@
                     label: 'admin',
                     cssClass: 'labelClass a b'
                 })
-
             }
         }
     }

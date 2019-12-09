@@ -160,10 +160,7 @@
                         let from = evt.source.id
                         let to = evt.target.id
                         if (this.loadEasyFlowFinish) {
-                            this.data.lineList.push({
-                                from: from,
-                                to: to
-                            })
+                            this.data.lineList.push({from: from, to: to})
                         }
                     })
 

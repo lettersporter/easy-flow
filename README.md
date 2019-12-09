@@ -163,8 +163,8 @@ npm run dev
 ## github
 https://github.com/BiaoChengLiu/easy-flow
 
-## 联系方式
-QQ: 1537130693
+## 交流群
+![avatar](src/assets/qrcode.jpg)
 
 ## 协议
 符合项目package.json中使用的插件中规定的协议即可

@@ -25,6 +25,7 @@
         data() {
             return {
                 dialogVisible: false,
+                flowJsonData: {},
                 options: {
                     mode: {name: "javascript", json: true},
                     lineNumbers: true
@@ -34,15 +35,10 @@
         components: {
             codemirror
         },
-        computed: {
-            flowJsonData() {
-                // 数据转json字符串格式化
-                return JSON.stringify(this.data, null, 4).toString()
-            }
-        },
         methods: {
             init() {
                 this.dialogVisible = true
+                this.flowJsonData = JSON.stringify(this.data, null, 4).toString()
             }
         }
     }

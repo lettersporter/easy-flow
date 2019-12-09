@@ -164,7 +164,9 @@ npm run dev
 https://github.com/BiaoChengLiu/easy-flow
 
 ## 交流群
-![avatar](src/assets/qrcode.jpg)
+QQ群：534446043
+
+![avatar](https://gitee.com/xiaoka2017/resource/raw/master/easy-flow/qrcode_1575887795029.jpg)
 
 ## 协议
 符合项目package.json中使用的插件中规定的协议即可

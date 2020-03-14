@@ -6,7 +6,7 @@ export const easyFlowMixin = {
                 Anchors: ['Top', 'TopCenter', 'TopRight', 'TopLeft', 'Right', 'RightMiddle', 'Bottom', 'BottomCenter', 'BottomRight', 'BottomLeft', 'Left', 'LeftMiddle'],
                 Container: 'flowContainer',
                 // 连线的样式 StateMachine、Flowchart，Bezier
-                Connector: 'Bezier',
+                Connector: 'Flowchart',
                 // 鼠标不能拖动删除线
                 ConnectionsDetachable: false,
                 // 删除线的时候节点不删除

@@ -7,17 +7,17 @@
 
 ## 效果图
 
-![](https://gitee.com/xiaoka2017/resource/raw/master/easy-flow/1.png)
 
-
-![](https://gitee.com/xiaoka2017/resource/raw/master/easy-flow/3.png)
-
-
-![](https://gitee.com/xiaoka2017/resource/raw/master/easy-flow/2.png)
-
-![](https://gitee.com/xiaoka2017/resource/raw/master/easy-flow/5.png)
-
-![](https://gitee.com/xiaoka2017/resource/raw/master/easy-flow/4.png)
+<table>
+    <tr>
+        <td><img src="https://gitee.com/xiaoka2017/resource/raw/master/easy-flow/1.png"/></td>
+        <td><img src="https://gitee.com/xiaoka2017/resource/raw/master/easy-flow/2.png></td>
+    </tr>
+    <tr>
+        <td><img src="https://gitee.com/xiaoka2017/resource/raw/master/easy-flow/3.png"/></td>
+        <td><img src="https://gitee.com/xiaoka2017/resource/raw/master/easy-flow/4.png></td>
+    </tr>
+</table>
 
 
 ## 项目介绍

@@ -4,20 +4,35 @@
             :style="nodeContainerStyle"
             @mouseenter="mouseEnter=true"
             @mouseleave="mouseEnter=false"
+            @click="clickNode"
             @mouseup="changeNodePosition"
+            class="flow-node-container"
     >
-        <div class="flow-node-header">
-            <!--左上角的那个图标样式-->
-            <i :class="nodeIcoClass"></i>
-            <!--鼠标移入到节点中时右上角的【编辑】、【删除】 按钮-->
-            <div v-show="mouseEnter" class="flow-node-operate">
-                <a href="#" @click="editNode"><img src="@/assets/edit.png"></a>&nbsp;
-                <a href="#" @click="deleteNode"><img src="@/assets/delete.png"></a> &nbsp;
-            </div>
-        </div>
+        <!--        <div class="flow-node-header">-->
+        <!--            &lt;!&ndash;左上角的那个图标样式&ndash;&gt;-->
+        <!--            <i :class="nodeIcoClass"></i>-->
+        <!--            &lt;!&ndash;鼠标移入到节点中时右上角的【编辑】、【删除】 按钮&ndash;&gt;-->
+        <!--            <div v-show="mouseEnter" class="flow-node-operate">-->
+        <!--                <a href="#" @click="editNode"><img src="@/assets/edit.png"></a>&nbsp;-->
+        <!--                <a href="#" @click="deleteNode"><img src="@/assets/delete.png"></a> &nbsp;-->
+        <!--            </div>-->
+        <!--        </div>-->
         <!--节点的正文部分-->
-        <div class="flow-node-body">
+        <!--        <div class="flow-node-body">-->
+        <!--            {{node.name}}-->
+        <!--        </div>-->
+        <div class="flow-node-left"></div>
+
+        <div class="flow-node-left-ico flow-node-drag">
+            <i :class="nodeIcoClass"></i>
+        </div>
+
+        <div class="flow-node-text" :show-overflow-tooltip="true">
             {{node.name}}
+        </div>
+
+        <div class="flow-node-right-ico" v-if="mouseEnter" @click="deleteNode">
+            <i class="el-icon-delete"></i>
         </div>
     </div>
 </template>
@@ -30,19 +45,16 @@
         data() {
             return {
                 // 控制节点操作显示
-                mouseEnter: false
+                mouseEnter: false,
+                stateImg: require('@/assets/ok.png')
             }
         },
         computed: {
             // 节点容器样式
             nodeContainerStyle() {
                 return {
-                    position: 'absolute',
-                    width: '200px',
                     top: this.node.top,
-                    left: this.node.left,
-                    boxShadow: this.mouseEnter ? '#66a6e0 0px 0px 12px 0px' : '',
-                    backgroundColor: 'transparent'
+                    left: this.node.left
                 }
             },
             nodeIcoClass() {
@@ -58,9 +70,10 @@
             deleteNode() {
                 this.$emit('deleteNode', this.node.id)
             },
-            // 编辑节点
-            editNode() {
-                this.$emit('editNode', this.node.id)
+            // 点击节点
+            clickNode() {
+                console.log('点击', this.node)
+                this.$emit('clickNode', this.node.id)
             },
             // 鼠标移动后抬起
             changeNodePosition() {
@@ -117,6 +130,61 @@
         top: 0px;
         right: 0px;
         line-height: 25px
+    }
+
+    .flow-node-container {
+        position: absolute;
+        display: flex;
+        width: 170px;
+        height: 35px;
+        border: 1px solid #E0E3E7;
+        border-radius: 5px;
+        background-color: #fff;
+    }
+
+    .flow-node-container:hover {
+        /* 设置移动样式*/
+        cursor: move;
+        background-color: #F0F7FF;
+        /*box-shadow: #1879FF 0px 0px 12px 0px;*/
+        background-color: #F0F7FF;
+        border: 1px solid #1879FF;
+    }
+
+    .flow-node-left {
+        width: 4px;
+        background-color: #1879FF;
+        border-radius: 4px 0 0 4px;
+    }
+
+    .flow-node-left-ico {
+        line-height: 35px;
+        margin-left: 8px;
+    }
+
+    .flow-node-left-ico:hover {
+        /* 设置拖拽的样式 */
+        cursor: crosshair;
+    }
+
+    .flow-node-text {
+        color: #565758;
+        font-size: 12px;
+        line-height: 35px;
+        margin-left: 8px;
+        width: 100px;
+        /* 设置超出宽度文本显示方式*/
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .flow-node-right-ico {
+        line-height: 35px;
+        position: absolute;
+        right: 10px;
+        color: #84CF65;
+        cursor: default;
     }
 
 </style>

@@ -8,10 +8,10 @@ Vue.config.productionTip = false
 import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
 
-Vue.use(ElementUI, { size: 'small'})
+Vue.use(ElementUI, {size: 'small'})
 
 
-import {codemirror} from 'vue-codemirror'
+import { codemirror } from 'vue-codemirror'
 import 'codemirror/lib/codemirror.css'
 
 Vue.use(codemirror)

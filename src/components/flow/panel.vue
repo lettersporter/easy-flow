@@ -1,28 +1,28 @@
 <template>
     <div v-if="easyFlowVisible">
         <el-row>
+            <!--顶部工具菜单-->
+            <el-col :span="24">
+                <div class="flow-tooltar">
+                    <el-link type="primary">{{data.name}}</el-link>
+                    <el-button icon="el-icon-document" @click="dataInfo" size="mini">流程信息</el-button>
+                    <el-button @click="dataReloadA" icon="el-icon-refresh" size="mini">切换流程A</el-button>
+                    <el-button @click="dataReloadB" icon="el-icon-refresh" size="mini">切换流程B</el-button>
+                    <el-button @click="dataReloadC" icon="el-icon-refresh" size="mini">切换流程C</el-button>
+                    <el-button @click="changeLabel" icon="el-icon-edit-outline" size="mini">设置线</el-button>
+                </div>
+            </el-col>
+        </el-row>
+        <el-row>
             <!--左侧可以拖动的菜单-->
-            <el-col :span="3" ref="nodeMenu">
+            <el-col :span="2" ref="nodeMenu">
                 <node-menu @addNode="addNode"></node-menu>
             </el-col>
-            <el-col :span="21">
-                <el-row>
-                    <!--顶部工具菜单-->
-                    <el-col :span="24">
-                        <div style="margin-bottom: 5px; margin-left: 10px">
-                            <el-link type="primary">{{data.name}}</el-link>
-                            <el-button type="info" icon="el-icon-document" @click="dataInfo">流程信息</el-button>
-                            <el-button type="primary" @click="dataReloadA" icon="el-icon-refresh">切换流程A</el-button>
-                            <el-button type="success" @click="dataReloadB" icon="el-icon-refresh">切换流程B</el-button>
-                            <el-button type="warning" @click="dataReloadC" icon="el-icon-refresh">切换流程C</el-button>
-                            <el-button type="warning" @click="changeLabel" icon="el-icon-edit-outline">设置线</el-button>
-                        </div>
-                    </el-col>
-                </el-row>
+            <el-col :span="22">
                 <el-row>
                     <!--画布-->
-                    <el-col :span="24">
-                        <div id="flowContainer" class="container">
+                    <el-col :span="18">
+                        <div id="flowContainer" ref="flowContainer" class="container">
                             <template v-for="node in data.nodeList">
                                 <flow-node
                                         v-show="node.show"
@@ -31,95 +31,54 @@
                                         @deleteNode="deleteNode"
                                         @changeNodeSite="changeNodeSite"
                                         @nodeRightMenu="nodeRightMenu"
-                                        @editNode="editNode"
+                                        @clickNode="clickNode"
                                 >
                                 </flow-node>
                             </template>
                         </div>
+                    </el-col>
+                    <el-col :span="6">
+                        <flow-node-form ref="nodeForm"></flow-node-form>
                     </el-col>
                 </el-row>
             </el-col>
         </el-row>
         <!-- 流程数据详情 -->
         <flow-info v-if="flowInfoVisible" ref="flowInfo" :data="data"></flow-info>
-        <!-- 流程数据表单 -->
-        <flow-node-form v-if="nodeFormVisible" ref="nodeForm"></flow-node-form>
     </div>
 
 </template>
 
 <script>
     import draggable from 'vuedraggable'
-    import {jsPlumb} from 'jsplumb'
+    import { jsPlumb } from 'jsplumb'
+    import { easyFlowMixin } from '@/mixins/easy_flow_mixin'
     import flowNode from '@/components/flow/node'
     import nodeMenu from '@/components/flow/node_menu'
     import FlowInfo from '@/components/flow/info'
     import FlowNodeForm from './node_form'
     import lodash from 'lodash'
-    import {getDataA} from './data_A'
-    import {getDataB} from './data_B'
-    import {getDataC} from './data_C'
+    import { getDataA } from './data_A'
+    import { getDataB } from './data_B'
+    import { getDataC } from './data_C'
 
     export default {
         data() {
             return {
                 // jsPlumb 实例
                 jsPlumb: null,
+                // 控制画布销毁
                 easyFlowVisible: true,
                 // 控制流程数据显示与隐藏
                 flowInfoVisible: false,
-                // 控制表单显示与隐藏
-                nodeFormVisible: false,
-                // 默认设置参数
-                jsplumbSetting: {
-                    // 动态锚点、位置自适应
-                    Anchors: ['Top', 'TopCenter', 'TopRight', 'TopLeft', 'Right', 'RightMiddle', 'Bottom', 'BottomCenter', 'BottomRight', 'BottomLeft', 'Left', 'LeftMiddle'],
-                    Container: 'flowContainer',
-                    // 连线的样式 StateMachine、Flowchart
-                    Connector: 'Flowchart',
-                    // 鼠标不能拖动删除线
-                    ConnectionsDetachable: false,
-                    // 删除线的时候节点不删除
-                    DeleteEndpointsOnDetach: false,
-                    // 连线的端点
-                    // Endpoint: ["Dot", {radius: 5}],
-                    Endpoint: ["Rectangle", {height: 10, width: 10}],
-                    // 线端点的样式
-                    EndpointStyle: {fill: 'rgba(255,255,255,0)', outlineWidth: 1},
-                    LogEnabled: true,//是否打开jsPlumb的内部日志记录
-                    // 绘制线
-                    PaintStyle: {stroke: 'black', strokeWidth: 3},
-                    // 绘制箭头
-                    Overlays: [['Arrow', {width: 12, length: 12, location: 1}]],
-                    RenderMode: "svg"
-                },
-                // jsplumb连接参数
-                jsplumbConnectOptions: {
-                    isSource: true,
-                    isTarget: true,
-                    // 动态锚点、提供了4个方向 Continuous、AutoDefault
-                    anchor: "Continuous"
-                },
-                jsplumbSourceOptions: {
-                    /*"span"表示标签，".className"表示类，"#id"表示元素id*/
-                    filter: ".flow-node-drag",
-                    filterExclude: false,
-                    anchor: "Continuous",
-                    allowLoopback: false
-                },
-                jsplumbTargetOptions: {
-                    /*"span"表示标签，".className"表示类，"#id"表示元素id*/
-                    filter: ".flow-node-drag",
-                    filterExclude: false,
-                    anchor: "Continuous",
-                    allowLoopback: false
-                },
-                // 是否加载完毕
+                // 是否加载完毕标志位
                 loadEasyFlowFinish: false,
                 // 数据
-                data: {},
+                data: {}
             }
         },
+        // 一些基础配置移动该文件中
+        mixins: [easyFlowMixin],
         components: {
             draggable, flowNode, nodeMenu, FlowInfo, FlowNodeForm
         },
@@ -127,7 +86,7 @@
             this.jsPlumb = jsPlumb.getInstance()
             this.$nextTick(() => {
                 // 默认加载流程A的数据、在这里可以根据具体的业务返回符合流程数据格式的数据即可
-                this.dataReload(getDataA())
+                this.dataReload(getDataB())
             })
         },
         methods: {
@@ -136,7 +95,6 @@
                 return Math.random().toString(36).substr(3, 10)
             },
             jsPlumbInit() {
-                const _this = this
                 this.jsPlumb.ready(() => {
                     // 导入默认配置
                     this.jsPlumb.importDefaults(this.jsplumbSetting)
@@ -174,17 +132,7 @@
                         this.changeLine(evt.originalSourceId, evt.originalTargetId)
                     })
 
-                    // 单击endpoint
-                    // jsPlumb.bind("endpointClick", function (evt) {
-                    //   console.log('endpointClick', evt)
-                    // })
-                    //
-                    // // 双击endpoint
-                    // jsPlumb.bind("endpointDblClick", function (evt) {
-                    //   console.log('endpointDblClick', evt)
-                    // })
-
-                    // contextmenu
+                    // 连线右击
                     this.jsPlumb.bind("contextmenu", (evt) => {
                         console.log('contextmenu', evt)
                     })
@@ -194,21 +142,18 @@
                         let from = evt.sourceId
                         let to = evt.targetId
                         if (from === to) {
-                            this.$message.error('不能连接自己')
+                            this.$message.error('节点不支持连接自己')
                             return false
                         }
                         if (this.hasLine(from, to)) {
-                            this.$message.error('不能重复连线')
+                            this.$message.error('该关系已存在,不允许重复创建')
                             return false
                         }
                         if (this.hashOppositeLine(from, to)) {
-                            this.$message.error('不能回环');
+                            this.$message.error('不支持两个节点之间连线回环');
                             return false
                         }
-                        this.$message({
-                            message: '连线成功',
-                            type: 'success'
-                        })
+                        this.$message.success('连接成功')
                         return true
                     })
 
@@ -227,19 +172,12 @@
                     this.jsPlumb.makeSource(node.id, this.jsplumbSourceOptions)
                     // // 设置目标点，其他源点拖出的线可以连接该节点
                     this.jsPlumb.makeTarget(node.id, this.jsplumbTargetOptions)
-
-                    this.jsPlumb.draggable(node.id, {
-                        containment: 'parent'
-                    })
+                    this.jsPlumb.draggable(node.id, {containment: 'parent'})
                 }
-
                 // 初始化连线
                 for (var i = 0; i < this.data.lineList.length; i++) {
                     let line = this.data.lineList[i]
-                    this.jsPlumb.connect({
-                        source: line.from,
-                        target: line.to
-                    }, this.jsplumbConnectOptions)
+                    this.jsPlumb.connect({source: line.from, target: line.to}, this.jsplumbConnectOptions)
                 }
                 this.$nextTick(function () {
                     this.loadEasyFlowFinish = true
@@ -283,9 +221,20 @@
                 if (top < 0) {
                     top = evt.originalEvent.clientY - 50
                 }
+                // 获取容器的坐标范围
+                // var containerRect = this.$refs.flowContainer.getBoundingClientRect()
+                // var containerX1 = containerRect.x, containerX2 = containerRect.x + containerRect.width
+                // var containerY1 = containerRect.y, containerY2 = containerRect.y + containerRect.height
+                // console.log(left, top)
+                // console.log(containerX1, containerY1, containerX2, containerY2)
+                // if (left <= containerX1 || left >= containerX2 || top <= containerY1 || top >= containerY2) {
+                //     this.$message.error('请拖入到容器中')
+                //     return false
+                // }
                 var node = {
                     id: nodeId,
                     name: nodeId,
+                    type: nodeMenu.type,
                     left: left + 'px',
                     top: top + 'px',
                     ico: nodeMenu.ico,
@@ -331,15 +280,9 @@
                 })
                 return true
             },
-            /**
-             * 编辑节点
-             * @param nodeId 被点击编辑的节点的ID
-             */
-            editNode(nodeId) {
-                this.nodeFormVisible = true
-                this.$nextTick(function () {
-                    this.$refs.nodeForm.init(this.data, nodeId)
-                })
+            clickNode(nodeId) {
+                console.log('点击')
+                this.$refs.nodeForm.init(this.data, nodeId)
             },
             // 是否具有该线
             hasLine(from, to) {
@@ -403,7 +346,7 @@
                     target: 'nodeB'
                 })
                 lines[0].setLabel({
-                    label: 'admin',
+                    label: '',
                     cssClass: 'labelClass a b'
                 })
             }
@@ -413,11 +356,11 @@
 
 <style>
     #flowContainer {
-        background-image: linear-gradient(90deg, rgba(0, 0, 0, 0.15) 10%, rgba(0, 0, 0, 0) 10%), linear-gradient(rgba(0, 0, 0, 0.15) 10%, rgba(0, 0, 0, 0) 10%);
+        /*background-image: linear-gradient(90deg, rgba(0, 0, 0, 0.15) 10%, rgba(0, 0, 0, 0) 10%), linear-gradient(rgba(0, 0, 0, 0.15) 10%, rgba(0, 0, 0, 0) 10%);*/
         background-size: 10px 10px;
         height: 500px;
         background-color: rgb(251, 251, 251);
-        /*background-color: #42b983;*/
+        /*background-color: #fff;*/
         position: relative;
     }
 
@@ -432,5 +375,16 @@
         -moz-user-select: none;
         -ms-user-select: none;
         user-select: none;
+    }
+
+    .flow-tooltar {
+        padding-left: 10px;
+        box-sizing: border-box;
+        border: 1px solid #e9e9e9;
+        height: 42px;
+        line-height: 42px;
+        z-index: 3;
+        -webkit-box-shadow: 0 8px 12px 0 rgba(0, 52, 107, .04);
+        box-shadow: 0 8px 12px 0 rgba(0, 52, 107, .04);
     }
 </style>

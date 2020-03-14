@@ -1,26 +1,25 @@
 <template>
-    <div style="background-color: #66a6e0;" ref="tool">
-        <el-menu :default-openeds="defaultOpeneds">
-            <el-submenu :index="menu.id" v-for="menu  in  menuList" :key="menu.id">
-                <!--一级菜单名称、不可拖拽 -->
+    <div class="flow-menu" ref="tool">
+        <el-collapse v-model="activeNames">
+            <el-collapse-item v-for="menu  in  menuList" :key="menu.id" :name="menu.id">
                 <template slot="title">
-                    <i :class="menu.ico"></i>
-                    <span>{{menu.name}}</span>
+                    {{menu.name}}
                 </template>
-                <!--一级菜单子菜单、可拖拽菜单-->
-                <el-menu-item-group>
-                    <draggable @end="addNode" @choose="move" v-model="menu.children" :options="draggableOptions">
-                        <el-menu-item v-for="son in menu.children"
-                                      :key="son.id"
-                                      :index="son.id"
-                                      :type="son.type"
-                        >
-                            <i :class="son.ico"></i>{{son.name}}
-                        </el-menu-item>
-                    </draggable>
-                </el-menu-item-group>
-            </el-submenu>
-        </el-menu>
+                <draggable @end="end" @start="move" v-model="menu.children" :options="draggableOptions">
+                    <div v-for="son in menu.children"
+                         :type="son.type"
+                         class="flow-node-menu" :style="son.style">
+                        <div class="flow-node-menu-left"></div>
+                        <div class="flow-node-menu-left-ico">
+                            <i :class="son.ico"></i>
+                        </div>
+                        <div class="flow-node-menu-text">
+                            {{son.name}}
+                        </div>
+                    </div>
+                </draggable>
+            </el-collapse-item>
+        </el-collapse>
     </div>
 </template>
 <script>
@@ -34,8 +33,17 @@
     export default {
         data() {
             return {
+                activeNames: '1',
+                // draggable配置参数参考 https://www.cnblogs.com/weixin186/p/10108679.html
                 draggableOptions: {
-                    preventOnFilter: false
+                    preventOnFilter: false,
+                    sort: false,
+                    disabled: false,
+                    ghostClass: 'tt',
+                    // 不使用H5原生的配置
+                    forceFallback: true,
+                    // 拖拽的时候样式
+                    // fallbackClass: 'flow-node-draggable'
                 },
                 // 默认打开的左侧菜单的id
                 defaultOpeneds: ['1', '2'],
@@ -49,13 +57,17 @@
                             {
                                 id: '11',
                                 type: 'timer',
-                                name: '定时器',
+                                name: '数据接入',
                                 ico: 'el-icon-time',
+                                // 自定义覆盖样式
+                                style: {}
                             }, {
                                 id: '12',
                                 type: 'task',
-                                name: '定时任务',
+                                name: '接口调用',
                                 ico: 'el-icon-odometer',
+                                // 自定义覆盖样式
+                                style: {}
                             }
                         ]
                     },
@@ -68,13 +80,17 @@
                             {
                                 id: '21',
                                 type: 'end',
-                                name: '结束',
+                                name: '流程结束',
                                 ico: 'el-icon-caret-right',
+                                // 自定义覆盖样式
+                                style: {}
                             }, {
                                 id: '22',
                                 type: 'over',
-                                name: '清理',
+                                name: '数据清理',
                                 ico: 'el-icon-shopping-cart-full',
+                                // 自定义覆盖样式
+                                style: {}
                             }
                         ]
                     }
@@ -113,12 +129,13 @@
                 }
             },
             // 拖拽开始时触发
-            move(evt) {
+            move(evt, a, b, c) {
+                console.log(evt, a, b, c)
                 var type = evt.item.attributes.type.nodeValue
                 this.nodeMenu = this.getMenu(type)
             },
             // 拖拽结束时触发
-            addNode(evt, e) {
+            end(evt, e) {
                 this.$emit('addNode', evt, this.nodeMenu, mousePosition)
             },
             // 是否是火狐浏览器
@@ -133,6 +150,11 @@
     }
 </script>
 <style>
+
+    .flow-menu {
+        text-align: center;
+    }
+
     .flow-tool-menu {
         background-color: #eeeeee;
         cursor: pointer;
@@ -151,4 +173,56 @@
         vertical-align: middle;
         border-bottom: 1px solid #d3d3d3
     }
+
+    .flow-node-draggable {
+        border: 1px solid #1879FF;
+        height: 35px !important;
+        width: 170px !important;
+        line-height: 35px;
+    }
+
+
+    .flow-node-menu {
+        margin: 10px;
+        display: flex;
+        width: 80%;
+        height: 30px;
+        border: 1px solid #E0E3E7;
+        border-radius: 5px;
+        background-color: #fff;
+    }
+
+    .flow-node-menu:hover {
+        /* 设置移动样式*/
+        cursor: move;
+        background-color: #F0F7FF;
+        /*box-shadow: #1879FF 0px 0px 12px 0px;*/
+        background-color: #F0F7FF;
+        border: 1px solid #1879FF;
+    }
+
+    .flow-node-menu-left {
+        width: 4px;
+        background-color: #1879FF;
+        border-radius: 3px 0 0 3px;
+    }
+
+    .flow-node-menu-left-ico {
+        line-height: 30px;
+        margin-left: 4px;
+    }
+
+    .flow-node-menu-text {
+        color: #565758;
+        font-size: 12px;
+        line-height: 30px;
+        margin-left: 4px;
+        width: 70px;
+        /* 设置超出宽度文本显示方式*/
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+
 </style>

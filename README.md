@@ -8,16 +8,13 @@
 ## 效果图
 
 
-![](https://gitee.com/xiaoka2017/resource/raw/master/easy-flow/1.png)
+![](https://gitee.com/xiaoka2017/resource/raw/master/easy-flow/2.1.0/1.png)
 
 
-![](https://gitee.com/xiaoka2017/resource/raw/master/easy-flow/2.png)
+![](https://gitee.com/xiaoka2017/resource/raw/master/easy-flow/2.1.0/2.png)
 
 
-![](https://gitee.com/xiaoka2017/resource/raw/master/easy-flow/3.png)
-
-
-![](https://gitee.com/xiaoka2017/resource/raw/master/easy-flow/4.png)
+![](https://gitee.com/xiaoka2017/resource/raw/master/easy-flow/2.1.0/3.png)
 
 
 ## 项目介绍
@@ -30,7 +27,7 @@
 * 鼠标移入到节点中显示 编辑、删除 操作
 * 不支持节点线连接自己
 * 不支持节点A与节点B之间线互连
-* 点击线进行删除
+* 点击线进行设置条件
 * 支持给定数据加载流程图
 
 ## 更新日志
@@ -39,6 +36,7 @@
 * 更新版本号为2.1.0
 * 新增连线条件支持
 * 布局修改
+* 去除show控制显示参数
 
 2020年3月14日
 * 页面样式调整
@@ -82,33 +80,32 @@
             name: '流程C-节点A',
             left: '400px',
             top: '15px',
-            ico: 'el-icon-user-solid',
-            show: true
+            ico: 'el-icon-user-solid'
         },
         {
             id: 'nodeB',
             name: '流程C-节点B',
             left: '400px',
             top: '200px',
-            ico: 'el-icon-goods',
-            show: true
+            ico: 'el-icon-goods'
         },
         {
             id: 'nodeC',
             name: '流程C-节点C',
             left: '400px',
             top: '378px',
-            ico: 'el-icon-present',
-            show: true
+            ico: 'el-icon-present'
         }
     ],
     lineList: [
         {
             from: 'nodeA',
-            to: 'nodeB'
+            to: 'nodeB',
+            label: '条件A'
         }, {
             from: 'nodeB',
-            to: 'nodeC'
+            to: 'nodeC',
+            label: '条件B'
         }
     ]
 }
@@ -127,7 +124,6 @@
 |  left  |   节点在页面上的X坐标      |
 |  top  |   节点在页面上的Y坐标      |
 |  ico  |   节点显示的图标      |
-|  show  |   为了解决节点删除问题      |
 
 
 ## lineList 参数说明
@@ -135,6 +131,7 @@
 | :--------: | :------------: |
 |  from  |     连线的起始节点的ID      |
 |  to  |   连线的终点节点ID      |
+|  label  |   条件      |
 
 ## 使用说明
 

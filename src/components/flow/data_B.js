@@ -7,8 +7,7 @@ var data_B = {
             type: 'task',
             left: '18px',
             top: '223px',
-            ico: 'el-icon-user-solid',
-            show: true
+            ico: 'el-icon-user-solid'
         },
         {
             id: 'nodeB',
@@ -16,8 +15,7 @@ var data_B = {
             name: '流程B-节点B',
             left: '351px',
             top: '96px',
-            ico: 'el-icon-goods',
-            show: true
+            ico: 'el-icon-goods'
         },
         {
             id: 'nodeC',
@@ -25,26 +23,24 @@ var data_B = {
             type: 'task',
             left: '354px',
             top: '351px',
-            ico: 'el-icon-present',
-            show: true
+            ico: 'el-icon-present'
         }, {
             id: 'nodeD',
             name: '流程B-节点D',
             type: 'task',
             left: '723px',
             top: '215px',
-            ico: 'el-icon-present',
-            show: true
+            ico: 'el-icon-present'
         }
     ],
     lineList: [{
         from: 'nodeA',
         to: 'nodeB',
-        label: 'a->b'
+        label: '条件A'
     }, {
         from: 'nodeA',
         to: 'nodeC',
-        label: 'a->c'
+        label: '条件B'
     }, {
         from: 'nodeB',
         to: 'nodeD'

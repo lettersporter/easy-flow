@@ -1,30 +1,45 @@
 <template>
-    <div class="flow-node-form">
-        <div class="flow-node-form-header">编辑</div>
-        <div class="flow-node-form-body">
-            <el-form :model="node" ref="dataForm" label-width="80px">
-                <el-form-item label="类型">
-                    <el-input v-model="node.type" :disabled="true"></el-input>
-                </el-form-item>
-                <el-form-item label="名称">
-                    <el-input v-model="node.name"></el-input>
-                </el-form-item>
-                <el-form-item label="left坐标">
-                    <el-input v-model="node.left"></el-input>
-                </el-form-item>
-                <el-form-item label="top坐标">
-                    <el-input v-model="node.top"></el-input>
-                </el-form-item>
-                <el-form-item label="ico图标">
-                    <el-input v-model="node.ico"></el-input>
-                </el-form-item>
-                <el-form-item>
-                    <el-button @click="reset" icon="el-icon-close">重置</el-button>
-                    <el-button type="primary" icon="el-icon-check" @click="save">保存</el-button>
-                </el-form-item>
-            </el-form>
+    <div>
+        <div class="flow-node-form">
+            <div class="flow-node-form-header">
+                编辑
+            </div>
+            <div class="flow-node-form-body">
+                <el-form :model="node" ref="dataForm" label-width="80px" v-show="type === 'node'">
+                    <el-form-item label="类型">
+                        <el-input v-model="node.type" :disabled="true"></el-input>
+                    </el-form-item>
+                    <el-form-item label="名称">
+                        <el-input v-model="node.name"></el-input>
+                    </el-form-item>
+                    <el-form-item label="left坐标">
+                        <el-input v-model="node.left"></el-input>
+                    </el-form-item>
+                    <el-form-item label="top坐标">
+                        <el-input v-model="node.top"></el-input>
+                    </el-form-item>
+                    <el-form-item label="ico图标">
+                        <el-input v-model="node.ico"></el-input>
+                    </el-form-item>
+                    <el-form-item>
+                        <el-button icon="el-icon-close">重置</el-button>
+                        <el-button type="primary" icon="el-icon-check" @click="save">保存</el-button>
+                    </el-form-item>
+                </el-form>
+
+                <el-form :model="line" ref="dataForm" label-width="80px" v-show="type === 'line'">
+                    <el-form-item label="条件">
+                        <el-input v-model="line.label"></el-input>
+                    </el-form-item>
+                    <el-form-item>
+                        <el-button icon="el-icon-close">重置</el-button>
+                        <el-button type="primary" icon="el-icon-check" @click="saveLine">保存</el-button>
+                    </el-form-item>
+                </el-form>
+            </div>
         </div>
     </div>
+
 </template>
 
 <script>
@@ -33,7 +48,11 @@
     export default {
         data() {
             return {
+                visible: true,
+                // node 或 line
+                type: 'node',
                 node: {},
+                line: {},
                 data: {}
             }
         },
@@ -43,21 +62,22 @@
              * @param data
              * @param id
              */
-            init(data, id) {
+            nodeInit(data, id) {
+                this.type = 'node'
                 this.data = data
                 data.nodeList.filter((node) => {
                     if (node.id === id) {
-                        console.log(node)
                         this.node = cloneDeep(node)
                     }
                 })
             },
-            reset() {
-                this.data.nodeList.filter((node) => {
-                    if (node.id === this.node.id) {
-                        this.node = cloneDeep(node)
-                    }
-                })
+            lineInit(line) {
+                this.type = 'line'
+                this.line = line
+            },
+            // 修改连线
+            saveLine() {
+                this.$emit('setLineLabel', this.line.from, this.line.to, this.line.label)
             },
             save() {
                 this.data.nodeList.filter((node) => {
@@ -71,16 +91,11 @@
 </script>
 
 <style>
-    .flow-node-form {
-        background-color: #f7f9fb;
-        /*margin-left: 5px;*/
-    }
-
     .flow-node-form-header {
         height: 32px;
         border-top: 1px solid #dce3e8;
         border-bottom: 1px solid #dce3e8;
-        background: #ebeef2;
+        background: #F1F3F4;
         color: #000;
         line-height: 32px;
         padding-left: 12px;

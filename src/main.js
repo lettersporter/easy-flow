@@ -10,12 +10,6 @@ import 'element-ui/lib/theme-chalk/index.css'
 
 Vue.use(ElementUI, {size: 'small'})
 
-
-import { codemirror } from 'vue-codemirror'
-import 'codemirror/lib/codemirror.css'
-
-Vue.use(codemirror)
-
 /* eslint-disable no-new */
 new Vue({
     el: '#app',

@@ -1,5 +1,5 @@
 <template>
-    <div v-if="easyFlowVisible">
+    <div v-if="easyFlowVisible" style="height: calc(100vh);">
         <el-row>
             <!--顶部工具菜单-->
             <el-col :span="24">
@@ -9,40 +9,33 @@
                     <el-button @click="dataReloadA" icon="el-icon-refresh" size="mini">切换流程A</el-button>
                     <el-button @click="dataReloadB" icon="el-icon-refresh" size="mini">切换流程B</el-button>
                     <el-button @click="dataReloadC" icon="el-icon-refresh" size="mini">切换流程C</el-button>
-                    <el-button @click="changeLabel" icon="el-icon-edit-outline" size="mini">设置线</el-button>
                 </div>
             </el-col>
         </el-row>
-        <el-row>
-            <!--左侧可以拖动的菜单-->
-            <el-col :span="2" ref="nodeMenu">
-                <node-menu @addNode="addNode"></node-menu>
-            </el-col>
-            <el-col :span="22">
-                <el-row>
-                    <!--画布-->
-                    <el-col :span="18">
-                        <div id="flowContainer" ref="flowContainer" class="container">
-                            <template v-for="node in data.nodeList">
-                                <flow-node
-                                        v-show="node.show"
-                                        :id="node.id"
-                                        :node="node"
-                                        @deleteNode="deleteNode"
-                                        @changeNodeSite="changeNodeSite"
-                                        @nodeRightMenu="nodeRightMenu"
-                                        @clickNode="clickNode"
-                                >
-                                </flow-node>
-                            </template>
-                        </div>
-                    </el-col>
-                    <el-col :span="6">
-                        <flow-node-form ref="nodeForm"></flow-node-form>
-                    </el-col>
-                </el-row>
-            </el-col>
-        </el-row>
+        <div style="display: flex;height: calc(100% - 47px);">
+            <div style="width: 230px;border-right: 1px solid #dce3e8;">
+                <node-menu @addNode="addNode" ref="nodeMenu"></node-menu>
+            </div>
+            <div id="flowContainer" ref="flowContainer" class="container" v-flowDrag>
+                <template v-for="node in data.nodeList">
+                    <flow-node
+                            :id="node.id"
+                            :key="node.id"
+                            :node="node"
+                            :activeNodeId="activeNodeId"
+                            @deleteNode="deleteNode"
+                            @changeNodeSite="changeNodeSite"
+                            @nodeRightMenu="nodeRightMenu"
+                            @clickNode="clickNode"
+                    >
+                    </flow-node>
+                </template>
+                <div style="position:absolute;top: 2000px;left: 2000px;">&nbsp;</div>
+            </div>
+            <div style="width: 300px;border-left: 1px solid #dce3e8;background-color: #FBFBFB">
+                <flow-node-form ref="nodeForm" @setLineLabel="setLineLabel"></flow-node-form>
+            </div>
+        </div>
         <!-- 流程数据详情 -->
         <flow-info v-if="flowInfoVisible" ref="flowInfo" :data="data"></flow-info>
     </div>
@@ -52,7 +45,7 @@
 <script>
     import draggable from 'vuedraggable'
     import { jsPlumb } from 'jsplumb'
-    import { easyFlowMixin } from '@/mixins/easy_flow_mixin'
+    import { easyFlowMixin } from '@/components/flow/easy_flow_mixin'
     import flowNode from '@/components/flow/node'
     import nodeMenu from '@/components/flow/node_menu'
     import FlowInfo from '@/components/flow/info'
@@ -74,13 +67,52 @@
                 // 是否加载完毕标志位
                 loadEasyFlowFinish: false,
                 // 数据
-                data: {}
+                data: {},
+                // 激活的节点
+                activeNodeId: undefined
             }
         },
         // 一些基础配置移动该文件中
         mixins: [easyFlowMixin],
         components: {
             draggable, flowNode, nodeMenu, FlowInfo, FlowNodeForm
+        },
+        directives: {
+            'flowDrag': {
+                bind(el, binding, vnode, oldNode) {
+                    if (!binding) {
+                        return
+                    }
+                    el.onmousedown = (e) => {
+                        if (e.button == 2) {
+                            // 右键不管
+                            return
+                        }
+                        //  鼠标按下，计算当前原始距离可视区的高度
+                        let disX = e.clientX
+                        let disY = e.clientY
+                        el.style.cursor = 'move'
+
+                        document.onmousemove = function (e) {
+                            // 移动时禁止默认事件
+                            e.preventDefault()
+                            const left = e.clientX - disX
+                            disX = e.clientX
+                            el.scrollLeft += -left
+
+                            const top = e.clientY - disY
+                            disY = e.clientY
+                            el.scrollTop += -top
+                        }
+
+                        document.onmouseup = function (e) {
+                            el.style.cursor = 'auto'
+                            document.onmousemove = null
+                            document.onmouseup = null
+                        }
+                    }
+                }
+            }
         },
         mounted() {
             this.jsPlumb = jsPlumb.getInstance()
@@ -102,16 +134,23 @@
                     this.jsPlumb.setSuspendDrawing(false, true);
                     // 初始化节点
                     this.loadEasyFlow()
-                    // 单点击了连接线,
+                    // 单点击了连接线, https://www.cnblogs.com/ysx215/p/7615677.html
                     this.jsPlumb.bind('click', (conn, originalEvent) => {
-                        this.$confirm('确定删除所点击的线吗?', '提示', {
-                            confirmButtonText: '确定',
-                            cancelButtonText: '取消',
-                            type: 'warning'
-                        }).then(() => {
-                            this.jsPlumb.deleteConnection(conn)
-                        }).catch(() => {
+                        console.log(conn)
+                        this.activeNodeId = undefined
+                        this.$refs.nodeForm.lineInit({
+                            from: conn.sourceId,
+                            to: conn.targetId,
+                            label: conn.getLabel()
                         })
+                        // this.$confirm('确定删除所点击的线吗?', '提示', {
+                        //     confirmButtonText: '确定',
+                        //     cancelButtonText: '取消',
+                        //     type: 'warning'
+                        // }).then(() => {
+                        //     this.jsPlumb.deleteConnection(conn)
+                        // }).catch(() => {
+                        // })
                     })
                     // 连线
                     this.jsPlumb.bind("connection", (evt) => {
@@ -161,6 +200,7 @@
                     this.jsPlumb.bind("beforeDetach", (evt) => {
                         console.log('beforeDetach', evt)
                     })
+                    this.jsPlumb.setContainer(this.$refs.flowContainer)
                 })
             },
             // 加载流程图
@@ -172,16 +212,27 @@
                     this.jsPlumb.makeSource(node.id, this.jsplumbSourceOptions)
                     // // 设置目标点，其他源点拖出的线可以连接该节点
                     this.jsPlumb.makeTarget(node.id, this.jsplumbTargetOptions)
-                    this.jsPlumb.draggable(node.id, {containment: 'parent'})
+                    this.jsPlumb.draggable(node.id, {
+                        containment: 'parent', stop: function (el) {
+                            console.log('停止拖拽', el)
+                        }
+                    })
                 }
                 // 初始化连线
                 for (var i = 0; i < this.data.lineList.length; i++) {
                     let line = this.data.lineList[i]
-                    this.jsPlumb.connect({source: line.from, target: line.to}, this.jsplumbConnectOptions)
+                    this.jsPlumb.connect({source: line.from, target: line.to, label: line.label ? line.label : ''}, this.jsplumbConnectOptions)
                 }
                 this.$nextTick(function () {
                     this.loadEasyFlowFinish = true
                 })
+            },
+            setLineLabel(from, to, label) {
+                var conn = this.jsPlumb.getConnections({
+                    source: from,
+                    target: to
+                })[0]
+                conn.setLabel(label)
             },
             // 删除线
             deleteLine(from, to) {
@@ -213,32 +264,47 @@
              * @param mousePosition 鼠标拖拽结束的坐标
              */
             addNode(evt, nodeMenu, mousePosition) {
-                let width = this.$refs.nodeMenu.$el.clientWidth
-                let nodeId = this.getUUID(), left = mousePosition.left, top = mousePosition.top
-                if (left < 0) {
-                    left = evt.originalEvent.layerX - width
+                var screenX = evt.originalEvent.clientX, screenY = evt.originalEvent.clientY
+                let flowContainer = this.$refs.flowContainer
+                var containerRect = flowContainer.getBoundingClientRect()
+                var left = screenX, top = screenY
+                // 计算是否拖入到容器中
+                if (left < containerRect.x || left > containerRect.width + containerRect.x || top < containerRect.y || containerRect.y > containerRect.y + containerRect.height) {
+                    this.$message.error("请把节点拖入到画布中")
+                    return
                 }
-                if (top < 0) {
-                    top = evt.originalEvent.clientY - 50
+                left = left - containerRect.x + flowContainer.scrollLeft
+                top = top - containerRect.y + flowContainer.scrollTop
+                // 居中
+                left -= 85
+                top -= 16
+                var nodeId = this.getUUID()
+                // 动态生成名字
+                var origName = nodeMenu.name
+                var nodeName = origName
+                var index = 1
+                while (index < 10000) {
+                    var repeat = false
+                    for (var i = 0; i < this.data.nodeList.length; i++) {
+                        let node = this.data.nodeList[i]
+                        if (node.name === nodeName) {
+                            nodeName = origName + index
+                            repeat = true
+                        }
+                    }
+                    if (repeat) {
+                        index++
+                        continue
+                    }
+                    break
                 }
-                // 获取容器的坐标范围
-                // var containerRect = this.$refs.flowContainer.getBoundingClientRect()
-                // var containerX1 = containerRect.x, containerX2 = containerRect.x + containerRect.width
-                // var containerY1 = containerRect.y, containerY2 = containerRect.y + containerRect.height
-                // console.log(left, top)
-                // console.log(containerX1, containerY1, containerX2, containerY2)
-                // if (left <= containerX1 || left >= containerX2 || top <= containerY1 || top >= containerY2) {
-                //     this.$message.error('请拖入到容器中')
-                //     return false
-                // }
                 var node = {
                     id: nodeId,
-                    name: nodeId,
+                    name: nodeName,
                     type: nodeMenu.type,
                     left: left + 'px',
                     top: top + 'px',
-                    ico: nodeMenu.ico,
-                    show: true
+                    ico: nodeMenu.ico
                 }
                 /**
                  * 这里可以进行业务判断、是否能够添加该节点
@@ -269,7 +335,8 @@
                     this.data.nodeList = this.data.nodeList.filter(function (node) {
                         if (node.id === nodeId) {
                             // 伪删除，将节点隐藏，否则会导致位置错位
-                            node.show = false
+                            // node.show = false
+                            return false
                         }
                         return true
                     })
@@ -281,8 +348,8 @@
                 return true
             },
             clickNode(nodeId) {
-                console.log('点击')
-                this.$refs.nodeForm.init(this.data, nodeId)
+                this.activeNodeId = nodeId
+                this.$refs.nodeForm.nodeInit(this.data, nodeId)
             },
             // 是否具有该线
             hasLine(from, to) {
@@ -356,12 +423,16 @@
 
 <style>
     #flowContainer {
-        /*background-image: linear-gradient(90deg, rgba(0, 0, 0, 0.15) 10%, rgba(0, 0, 0, 0) 10%), linear-gradient(rgba(0, 0, 0, 0.15) 10%, rgba(0, 0, 0, 0) 10%);*/
-        background-size: 10px 10px;
-        height: 500px;
-        background-color: rgb(251, 251, 251);
-        /*background-color: #fff;*/
+        /*#FAFAFA*/
+        /*background:white;*/
+        /*background-image: linear-gradient(#EFEFEF 1px,transparent 0),*/
+        /*linear-gradient(90deg, #EFEFEF 1px,transparent 0),*/
+        /*linear-gradient(hsla(0,0%,100%,.3) 1px,transparent 0),*/
+        /*linear-gradient(90deg,hsla(0,0%,100%,.3) 1px,transparent 0);*/
+        /*background-size:75px 75px,75px 75px,15px 15px,15px 15px;*/
         position: relative;
+        flex: 1;
+        overflow: scroll;
     }
 
     .labelClass {
@@ -380,11 +451,16 @@
     .flow-tooltar {
         padding-left: 10px;
         box-sizing: border-box;
-        border: 1px solid #e9e9e9;
         height: 42px;
         line-height: 42px;
         z-index: 3;
         -webkit-box-shadow: 0 8px 12px 0 rgba(0, 52, 107, .04);
         box-shadow: 0 8px 12px 0 rgba(0, 52, 107, .04);
+        border-bottom: 1px solid #DADCE0;
+    }
+
+    .jtk-overlay {
+        cursor: pointer;
+        color: #4A4A4A;
     }
 </style>

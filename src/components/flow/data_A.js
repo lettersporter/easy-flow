@@ -7,8 +7,7 @@ var data_A = {
             type: 'task',
             left: '26px',
             top: '161px',
-            ico: 'el-icon-user-solid',
-            show: true
+            ico: 'el-icon-user-solid'
         },
         {
             id: 'nodeB',
@@ -16,8 +15,7 @@ var data_A = {
             type: 'task',
             left: '340px',
             top: '161px',
-            ico: 'el-icon-goods',
-            show: true
+            ico: 'el-icon-goods'
         },
         {
             id: 'nodeC',
@@ -25,8 +23,7 @@ var data_A = {
             type: 'task',
             left: '739px',
             top: '161px',
-            ico: 'el-icon-present',
-            show: true
+            ico: 'el-icon-present'
         }
     ],
     lineList: [{

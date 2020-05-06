@@ -14,8 +14,8 @@
 </template>
 
 <script>
-    import {codemirror} from 'vue-codemirror'
-
+    import 'codemirror/lib/codemirror.css'
+    import { codemirror } from 'vue-codemirror'
     require("codemirror/mode/javascript/javascript.js")
 
     export default {

@@ -31,7 +31,7 @@ var data_B = {
             id: 'nodeD',
             name: '流程B-节点D',
             type: 'task',
-            left: '773px',
+            left: '723px',
             top: '215px',
             ico: 'el-icon-present',
             show: true
@@ -39,10 +39,12 @@ var data_B = {
     ],
     lineList: [{
         from: 'nodeA',
-        to: 'nodeB'
+        to: 'nodeB',
+        label: 'a->b'
     }, {
         from: 'nodeA',
-        to: 'nodeC'
+        to: 'nodeC',
+        label: 'a->c'
     }, {
         from: 'nodeB',
         to: 'nodeD'

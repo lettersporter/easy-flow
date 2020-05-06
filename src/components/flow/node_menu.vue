@@ -1,25 +1,15 @@
 <template>
     <div class="flow-menu" ref="tool">
-        <el-collapse v-model="activeNames">
-            <el-collapse-item v-for="menu  in  menuList" :key="menu.id" :name="menu.id">
-                <template slot="title">
-                    {{menu.name}}
-                </template>
+        <div v-for="menu  in  menuList" :key="menu.id">
+            <span class="flow-node-pmenu" @click="menu.open = !menu.open"><i :class="{'el-icon-caret-bottom': menu.open,'el-icon-caret-right': !menu.open}"></i>&nbsp;{{menu.name}}</span>
+            <ul style="list-style: none;padding-left: 20px" v-show="menu.open">
                 <draggable @end="end" @start="move" v-model="menu.children" :options="draggableOptions">
-                    <div v-for="son in menu.children"
-                         :type="son.type"
-                         class="flow-node-menu" :style="son.style">
-                        <div class="flow-node-menu-left"></div>
-                        <div class="flow-node-menu-left-ico">
-                            <i :class="son.ico"></i>
-                        </div>
-                        <div class="flow-node-menu-text">
-                            {{son.name}}
-                        </div>
-                    </div>
+                    <li v-for="subMenu in menu.children" class="flow-node-menu-li" :key="subMenu.id" :type="subMenu.type">
+                        <i :class="subMenu.ico"></i> {{subMenu.name}}
+                    </li>
                 </draggable>
-            </el-collapse-item>
-        </el-collapse>
+            </ul>
+        </div>
     </div>
 </template>
 <script>
@@ -53,6 +43,7 @@
                         type: 'group',
                         name: '开始节点',
                         ico: 'el-icon-video-play',
+                        open: true,
                         children: [
                             {
                                 id: '11',
@@ -76,6 +67,7 @@
                         type: 'group',
                         name: '结束节点',
                         ico: 'el-icon-video-pause',
+                        open: true,
                         children: [
                             {
                                 id: '21',
@@ -130,7 +122,6 @@
             },
             // 拖拽开始时触发
             move(evt, a, b, c) {
-                console.log(evt, a, b, c)
                 var type = evt.item.attributes.type.nodeValue
                 this.nodeMenu = this.getMenu(type)
             },
@@ -151,78 +142,38 @@
 </script>
 <style>
 
-    .flow-menu {
-        text-align: center;
-    }
-
-    .flow-tool-menu {
-        background-color: #eeeeee;
+    .flow-node-pmenu{
         cursor: pointer;
+        height: 32px;
+        line-height: 32px;
+        width: 225px;
+        display: block;
+        font-weight: bold;
+        color: #4A4A4A;
         padding-left: 5px;
-        height: 50px;
-        line-height: 50px;
-        border-bottom: 1px solid #979797
     }
 
-    .flow-tool-submenu {
-        background-color: white;
-        padding-left: 20px;
-        cursor: pointer;
-        height: 50px;
-        line-height: 50px;
-        vertical-align: middle;
-        border-bottom: 1px solid #d3d3d3
+    .flow-node-pmenu:hover{
+        background-color: #E0E0E0;
     }
 
-    .flow-node-draggable {
-        border: 1px solid #1879FF;
-        height: 35px !important;
-        width: 170px !important;
-        line-height: 35px;
-    }
-
-
-    .flow-node-menu {
-        margin: 10px;
-        display: flex;
-        width: 80%;
-        height: 30px;
-        border: 1px solid #E0E3E7;
+    .flow-node-menu-li {
+        color: #565758;
+        width: 150px;
+        border: 1px dashed #E0E3E7;
+        margin: 5px 0 5px 0;
+        padding: 5px;
         border-radius: 5px;
-        background-color: #fff;
+        padding-left: 8px;
     }
 
-    .flow-node-menu:hover {
+    .flow-node-menu-li:hover {
         /* 设置移动样式*/
         cursor: move;
         background-color: #F0F7FF;
-        /*box-shadow: #1879FF 0px 0px 12px 0px;*/
-        background-color: #F0F7FF;
-        border: 1px solid #1879FF;
+        border: 1px dashed #1879FF;
+        border-left: 4px solid #1879FF;
+        padding-left: 5px;
     }
-
-    .flow-node-menu-left {
-        width: 4px;
-        background-color: #1879FF;
-        border-radius: 3px 0 0 3px;
-    }
-
-    .flow-node-menu-left-ico {
-        line-height: 30px;
-        margin-left: 4px;
-    }
-
-    .flow-node-menu-text {
-        color: #565758;
-        font-size: 12px;
-        line-height: 30px;
-        margin-left: 4px;
-        width: 70px;
-        /* 设置超出宽度文本显示方式*/
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-    }
-
 
 </style>

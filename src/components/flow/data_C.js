@@ -7,8 +7,7 @@ var dataC = {
             type: 'task',
             left: '400px',
             top: '15px',
-            ico: 'el-icon-user-solid',
-            show: true
+            ico: 'el-icon-user-solid'
         },
         {
             id: 'nodeB',
@@ -16,8 +15,7 @@ var dataC = {
             type: 'task',
             left: '400px',
             top: '200px',
-            ico: 'el-icon-goods',
-            show: true
+            ico: 'el-icon-goods'
         },
         {
             id: 'nodeC',
@@ -25,8 +23,7 @@ var dataC = {
             type: 'task',
             left: '400px',
             top: '378px',
-            ico: 'el-icon-present',
-            show: true
+            ico: 'el-icon-present'
         }
     ],
     lineList: [

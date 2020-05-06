@@ -6,7 +6,7 @@ export const easyFlowMixin = {
                 Anchors: ['Top', 'TopCenter', 'TopRight', 'TopLeft', 'Right', 'RightMiddle', 'Bottom', 'BottomCenter', 'BottomRight', 'BottomLeft', 'Left', 'LeftMiddle'],
                 Container: 'flowContainer',
                 // 连线的样式 StateMachine、Flowchart，Bezier
-                Connector: 'Flowchart',
+                Connector: ['Bezier', { curviness: 50 }],
                 // 鼠标不能拖动删除线
                 ConnectionsDetachable: false,
                 // 删除线的时候节点不删除
@@ -19,9 +19,16 @@ export const easyFlowMixin = {
                 EndpointStyle: {fill: '', outlineWidth: 1},
                 // 是否打开jsPlumb的内部日志记录
                 LogEnabled: true,
-                // 绘制线
-                PaintStyle: {stroke: '#E0E3E7', strokeWidth: 1},
-                // 绘制箭头
+                // 绘制连线
+                PaintStyle: {
+                    stroke: '#E0E3E7',
+                    strokeWidth: 1,
+                    // 设置外边线的颜色、无色，为了方便点击 https://blog.csdn.net/roymno2/article/details/72717101
+                    outlineStroke: 'transparent',
+                    // 设定线外边的宽，单位px
+                    outlineWidth: 10
+                },
+                // 绘制连线箭头
                 Overlays: [
                     ['Arrow', {width: 10, length: 8, location: 1, foldback: 0.8}],
                     ['Label', {location: 0.1, id: 'label', cssClass: 'aLabel'}]
@@ -34,10 +41,9 @@ export const easyFlowMixin = {
                     zIndex: 2000,
                     hoverClass: 'dropHover',
                     activeClass: 'dragActive'
-                },
-                scope: 'green dot'
+                }
                 // 鼠标滑过线的样式
-                // HoverPaintStyle: {stroke: '#1879FF'},
+                // HoverPaintStyle: {stroke: '', strokeWidth: 0, cursor: 'pointer'}
                 // 滑过锚点效果
                 // EndpointHoverStyle: {fill: 'red'}
             },

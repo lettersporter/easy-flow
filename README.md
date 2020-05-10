@@ -8,13 +8,11 @@
 ## 效果图
 
 
-![](https://gitee.com/xiaoka2017/resource/raw/master/easy-flow/2.1.0/1.png)
+![](https://gitee.com/xiaoka2017/resource/raw/master/easy-flow/2.2.0/1.png)
 
 
-![](https://gitee.com/xiaoka2017/resource/raw/master/easy-flow/2.1.0/2.png)
+![](https://gitee.com/xiaoka2017/resource/raw/master/easy-flow/2.2.0/2.png)
 
-
-![](https://gitee.com/xiaoka2017/resource/raw/master/easy-flow/2.1.0/3.png)
 
 
 ## 项目介绍
@@ -32,6 +30,11 @@
 * 支持画布拖拽
 
 ## 更新日志
+
+2020年5月8日
+* 修改jsplumb源码
+* 支持label设置和修改
+* 新增节点状态
 
 2020年5月6日
 * 新增: 连线条件支持
@@ -78,24 +81,38 @@
     nodeList: [
         {
             id: 'nodeA',
-            name: '流程C-节点A',
-            left: '400px',
-            top: '15px',
-            ico: 'el-icon-user-solid'
+            name: '流程B-节点A',
+            type: 'task',
+            left: '18px',
+            top: '223px',
+            ico: 'el-icon-user-solid',
+            state: 'success'
         },
         {
             id: 'nodeB',
-            name: '流程C-节点B',
-            left: '400px',
-            top: '200px',
-            ico: 'el-icon-goods'
+            type: 'task',
+            name: '流程B-节点B',
+            left: '351px',
+            top: '96px',
+            ico: 'el-icon-goods',
+            state: 'error'
         },
         {
             id: 'nodeC',
-            name: '流程C-节点C',
-            left: '400px',
-            top: '378px',
-            ico: 'el-icon-present'
+            name: '流程B-节点C',
+            type: 'task',
+            left: '354px',
+            top: '351px',
+            ico: 'el-icon-present',
+            state: 'warning'
+        }, {
+            id: 'nodeD',
+            name: '流程B-节点D',
+            type: 'task',
+            left: '723px',
+            top: '215px',
+            ico: 'el-icon-present',
+            state: 'running'
         }
     ],
     lineList: [
@@ -125,6 +142,7 @@
 |  left  |   节点在页面上的X坐标      |
 |  top  |   节点在页面上的Y坐标      |
 |  ico  |   节点显示的图标      |
+|  state  |   状态，可选值 success、error、warning、running      |
 
 
 ## lineList 参数说明

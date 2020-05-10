@@ -1,10 +1,10 @@
 <template>
     <div class="flow-menu" ref="tool">
         <div v-for="menu  in  menuList" :key="menu.id">
-            <span class="flow-node-pmenu" @click="menu.open = !menu.open"><i :class="{'el-icon-caret-bottom': menu.open,'el-icon-caret-right': !menu.open}"></i>&nbsp;{{menu.name}}</span>
-            <ul style="list-style: none;padding-left: 20px" v-show="menu.open">
+            <span class="ef-node-pmenu" @click="menu.open = !menu.open"><i :class="{'el-icon-caret-bottom': menu.open,'el-icon-caret-right': !menu.open}"></i>&nbsp;{{menu.name}}</span>
+            <ul v-show="menu.open" class="ef-node-menu-ul">
                 <draggable @end="end" @start="move" v-model="menu.children" :options="draggableOptions">
-                    <li v-for="subMenu in menu.children" class="flow-node-menu-li" :key="subMenu.id" :type="subMenu.type">
+                    <li v-for="subMenu in menu.children" class="ef-node-menu-li" :key="subMenu.id" :type="subMenu.type">
                         <i :class="subMenu.ico"></i> {{subMenu.name}}
                     </li>
                 </draggable>
@@ -110,7 +110,7 @@
         },
         methods: {
             // 根据类型获取左侧菜单对象
-            getMenu(type) {
+            getMenuByType(type) {
                 for (let i = 0; i < this.menuList.length; i++) {
                     let children = this.menuList[i].children;
                     for (let j = 0; j < children.length; j++) {
@@ -123,7 +123,7 @@
             // 拖拽开始时触发
             move(evt, a, b, c) {
                 var type = evt.item.attributes.type.nodeValue
-                this.nodeMenu = this.getMenu(type)
+                this.nodeMenu = this.getMenuByType(type)
             },
             // 拖拽结束时触发
             end(evt, e) {
@@ -140,40 +140,3 @@
         }
     }
 </script>
-<style>
-
-    .flow-node-pmenu{
-        cursor: pointer;
-        height: 32px;
-        line-height: 32px;
-        width: 225px;
-        display: block;
-        font-weight: bold;
-        color: #4A4A4A;
-        padding-left: 5px;
-    }
-
-    .flow-node-pmenu:hover{
-        background-color: #E0E0E0;
-    }
-
-    .flow-node-menu-li {
-        color: #565758;
-        width: 150px;
-        border: 1px dashed #E0E3E7;
-        margin: 5px 0 5px 0;
-        padding: 5px;
-        border-radius: 5px;
-        padding-left: 8px;
-    }
-
-    .flow-node-menu-li:hover {
-        /* 设置移动样式*/
-        cursor: move;
-        background-color: #F0F7FF;
-        border: 1px dashed #1879FF;
-        border-left: 4px solid #1879FF;
-        padding-left: 5px;
-    }
-
-</style>

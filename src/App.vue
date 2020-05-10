@@ -5,7 +5,7 @@
 </template>
 
 <script>
-    import FlowPanel from '@/components/flow/panel'
+    import FlowPanel from '@/components/ef/panel'
 
     export default {
         name: 'App',

@@ -1,10 +1,10 @@
 <template>
     <div>
-        <div class="flow-node-form">
-            <div class="flow-node-form-header">
+        <div class="ef-node-form">
+            <div class="ef-node-form-header">
                 编辑
             </div>
-            <div class="flow-node-form-body">
+            <div class="ef-node-form-body">
                 <el-form :model="node" ref="dataForm" label-width="80px" v-show="type === 'node'">
                     <el-form-item label="类型">
                         <el-input v-model="node.type" :disabled="true"></el-input>
@@ -89,22 +89,3 @@
         }
     }
 </script>
-
-<style>
-    .flow-node-form-header {
-        height: 32px;
-        border-top: 1px solid #dce3e8;
-        border-bottom: 1px solid #dce3e8;
-        background: #F1F3F4;
-        color: #000;
-        line-height: 32px;
-        padding-left: 12px;
-        font-size: 14px;
-    }
-
-    .flow-node-form-body {
-        margin-top: 10px;
-        padding-right: 10px;
-        padding-bottom: 20px;
-    }
-</style>

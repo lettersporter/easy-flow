@@ -6,7 +6,7 @@ export const easyFlowMixin = {
                 Anchors: ['Top', 'TopCenter', 'TopRight', 'TopLeft', 'Right', 'RightMiddle', 'Bottom', 'BottomCenter', 'BottomRight', 'BottomLeft', 'Left', 'LeftMiddle'],
                 Container: 'flowContainer',
                 // 连线的样式 StateMachine、Flowchart，Bezier
-                Connector: ['Bezier', { curviness: 50 }],
+                Connector: ['Bezier', {curviness: 50}],
                 // 鼠标不能拖动删除线
                 ConnectionsDetachable: false,
                 // 删除线的时候节点不删除
@@ -52,7 +52,15 @@ export const easyFlowMixin = {
                 isSource: true,
                 isTarget: true,
                 // 动态锚点、提供了4个方向 Continuous、AutoDefault
-                anchor: 'Continuous'
+                anchor: 'Continuous',
+                // 设置连线上面的label样式
+                labelStyle: {
+                    cssClass: 'flowLabel'
+                },
+                // 修改了jsplumb 源码，支持label 为空传入自定义style
+                emptyLabelStyle: {
+                    cssClass: 'emptyFlowLabel'
+                }
             },
             jsplumbSourceOptions: {
                 /* "span"表示标签，".className"表示类，"#id"表示元素id */

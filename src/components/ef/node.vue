@@ -8,15 +8,15 @@
     >
         <!-- 最左侧的那条竖线 -->
         <div class="ef-node-left"></div>
-        <!-- 标识节点类型的图标 -->
+        <!-- 节点类型的图标 -->
         <div class="ef-node-left-ico flow-node-drag">
             <i :class="nodeIcoClass"></i>
         </div>
-        <!-- 显示的节点名称 -->
+        <!-- 节点名称 -->
         <div class="ef-node-text" :show-overflow-tooltip="true">
             {{node.name}}
         </div>
-        <!-- 鼠标移入到节点中显示删除图标 -->
+        <!-- 节点状态图标 -->
         <div class="ef-node-right-ico">
             <i class="el-icon-circle-check el-node-state-success" v-show="node.state === 'success'"></i>
             <i class="el-icon-circle-close el-node-state-error" v-show="node.state === 'error'"></i>

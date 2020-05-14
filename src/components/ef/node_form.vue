@@ -37,6 +37,7 @@
                     </el-form-item>
                 </el-form>
             </div>
+            <div class="el-node-form-tag"></div>
         </div>
     </div>
 
@@ -89,3 +90,14 @@
         }
     }
 </script>
+
+<style>
+    .el-node-form-tag {
+        position: absolute;
+        top: 50%;
+        margin-left: -15px;
+        height: 40px;
+        width: 15px;
+        background-color: #d0b0b0;
+    }
+</style>

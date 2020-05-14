@@ -7,13 +7,14 @@
                     <el-link type="primary" :underline="false">{{data.name}}</el-link>
                     <el-divider direction="vertical"></el-divider>
                     <el-button type="text" icon="el-icon-delete" size="large" @click="deleteElement" :disabled="!this.activeElement.type"></el-button>
+                    <el-divider direction="vertical"></el-divider>
+                    <el-button type="text" icon="el-icon-download" size="large" @click="downloadData"></el-button>
                     <div style="float: right;margin-right: 5px">
                         <el-button plain round icon="el-icon-document" @click="dataInfo" size="mini">流程信息</el-button>
                         <el-button plain round @click="dataReloadA" icon="el-icon-refresh" size="mini">切换流程A</el-button>
                         <el-button plain round @click="dataReloadB" icon="el-icon-refresh" size="mini">切换流程B</el-button>
                         <el-button plain round @click="dataReloadC" icon="el-icon-refresh" size="mini">切换流程C</el-button>
                     </div>
-
                 </div>
             </el-col>
         </el-row>
@@ -34,8 +35,10 @@
                     >
                     </flow-node>
                 </template>
+                <!-- 给画布一个默认的宽度和高度 -->
                 <div style="position:absolute;top: 2000px;left: 2000px;">&nbsp;</div>
             </div>
+            <!-- 右侧表单 -->
             <div style="width: 300px;border-left: 1px solid #dce3e8;background-color: #FBFBFB">
                 <flow-node-form ref="nodeForm" @setLineLabel="setLineLabel"></flow-node-form>
             </div>
@@ -256,6 +259,12 @@
                 conn.setLabel({
                     label: label,
                 })
+                this.data.lineList.forEach(function (line) {
+                    if (line.from == from && line.to == to) {
+                        line.label = label
+                    }
+                })
+
             },
             // 删除激活的元素
             deleteElement() {
@@ -451,14 +460,27 @@
             dataReloadC() {
                 this.dataReload(getDataC())
             },
-            changeLabel() {
-                var lines = this.jsPlumb.getConnections({
+            // 下载数据
+            downloadData() {
+                var conn = this.jsPlumb.getConnections({
                     source: 'nodeA',
                     target: 'nodeB'
-                })
-                lines[0].setLabel({
-                    label: '',
-                    cssClass: 'labelClass a b'
+                })[0]
+                console.log(conn)
+                this.$confirm('确定要下载该流程数据吗？', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning',
+                    closeOnClickModal: false
+                }).then(() => {
+                    var datastr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(this.data, null, '\t'));
+                    var downloadAnchorNode = document.createElement('a')
+                    downloadAnchorNode.setAttribute("href", datastr);
+                    downloadAnchorNode.setAttribute("download", 'data.json')
+                    downloadAnchorNode.click();
+                    downloadAnchorNode.remove();
+                    this.$message.success("正在下载中,请稍后...")
+                }).catch(() => {
                 })
             }
         }

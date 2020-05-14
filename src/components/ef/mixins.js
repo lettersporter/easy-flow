@@ -4,9 +4,10 @@ export const easyFlowMixin = {
             jsplumbSetting: {
                 // 动态锚点、位置自适应
                 Anchors: ['Top', 'TopCenter', 'TopRight', 'TopLeft', 'Right', 'RightMiddle', 'Bottom', 'BottomCenter', 'BottomRight', 'BottomLeft', 'Left', 'LeftMiddle'],
-                Container: 'flowContainer',
-                // 连线的样式 StateMachine、Flowchart，Bezier
-                Connector: ['Bezier', {curviness: 50}],
+                Container: 'efContainer',
+                // 连线的样式 StateMachine、Flowchart，Bezier、Straight
+                // Connector: ['Flowchart', {curviness: 50}],
+                Connector: ['Bezier', {stub: [0, 0], gap: 1, cornerRadius: 5, alwaysRespectStubs: true}],
                 // 鼠标不能拖动删除线
                 ConnectionsDetachable: false,
                 // 删除线的时候节点不删除

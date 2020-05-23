@@ -176,16 +176,6 @@ npm run dev
  http://localhost:8080
 ```
 
-## TODO
-* 支持多种节点
-* 节点图标自定义
-* 节点样式自定义
-* 提供保存JSON格式功能
-* 提供Java版本数据解析工具包
-> 目前正在开发中，功能还未完善
-
-
-
 ## github
 https://github.com/BiaoChengLiu/easy-flow
 
@@ -198,6 +188,11 @@ QQ群：534446043
 ## 协议
 符合项目package.json中使用的插件中规定的协议即可
 
+
+
 ## 学习资料
-* https://www.cnblogs.com/mq0036/p/7942139.html
+| 名称     | 地址                                          | 说明                         |
+| -------- | --------------------------------------------- | ---------------------------- |
+| 后端SDK  | https://gitee.com/xiaoka2017/easy-flow-sdk    | 一个后端数据存储、操作的案例 |
+| 学习资料 | https://www.cnblogs.com/mq0036/p/7942139.html |                              |
 

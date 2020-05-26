@@ -37,7 +37,7 @@
                     </el-form-item>
                 </el-form>
             </div>
-            <div class="el-node-form-tag"></div>
+<!--            <div class="el-node-form-tag"></div>-->
         </div>
     </div>
 
@@ -84,6 +84,8 @@
                 this.data.nodeList.filter((node) => {
                     if (node.id === this.node.id) {
                         node.name = this.node.name
+                        node.left = this.node.left
+                        node.top = this.node.top
                     }
                 })
             }
@@ -98,6 +100,9 @@
         margin-left: -15px;
         height: 40px;
         width: 15px;
-        background-color: #d0b0b0;
+        background-color: #fbfbfb;
+        border: 1px solid rgb(220, 227, 232);
+        border-right: none;
+        z-index: 0;
     }
 </style>

@@ -231,7 +231,8 @@
                     // // 设置目标点，其他源点拖出的线可以连接该节点
                     this.jsPlumb.makeTarget(node.id, this.jsplumbTargetOptions)
                     this.jsPlumb.draggable(node.id, {
-                        containment: 'parent', stop: function (el) {
+                        containment: 'parent',
+                        stop: function (el) {
                             console.log('停止拖拽', el)
                         }
                     })

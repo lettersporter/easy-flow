@@ -9,11 +9,16 @@
                     <el-button type="text" icon="el-icon-delete" size="large" @click="deleteElement" :disabled="!this.activeElement.type"></el-button>
                     <el-divider direction="vertical"></el-divider>
                     <el-button type="text" icon="el-icon-download" size="large" @click="downloadData"></el-button>
+<!--                    <el-divider direction="vertical"></el-divider>-->
+<!--                    <el-button type="text" icon="el-icon-plus" size="large" @click="zoomAdd"></el-button>-->
+<!--                    <el-divider direction="vertical"></el-divider>-->
+<!--                    <el-button type="text" icon="el-icon-minus" size="large" @click="zoomSub"></el-button>-->
                     <div style="float: right;margin-right: 5px">
                         <el-button plain round icon="el-icon-document" @click="dataInfo" size="mini">流程信息</el-button>
                         <el-button plain round @click="dataReloadA" icon="el-icon-refresh" size="mini">切换流程A</el-button>
                         <el-button plain round @click="dataReloadB" icon="el-icon-refresh" size="mini">切换流程B</el-button>
                         <el-button plain round @click="dataReloadC" icon="el-icon-refresh" size="mini">切换流程C</el-button>
+                        <el-button plain round @click="dataReloadD" icon="el-icon-refresh" size="mini">自定义样式</el-button>
                     </div>
                 </div>
             </el-col>
@@ -40,7 +45,7 @@
             </div>
             <!-- 右侧表单 -->
             <div style="width: 300px;border-left: 1px solid #dce3e8;background-color: #FBFBFB">
-                <flow-node-form ref="nodeForm" @setLineLabel="setLineLabel"></flow-node-form>
+                <flow-node-form ref="nodeForm" @setLineLabel="setLineLabel" @repaintEverything="repaintEverything"></flow-node-form>
             </div>
         </div>
         <!-- 流程数据详情 -->
@@ -63,6 +68,7 @@
     import { getDataA } from './data_A'
     import { getDataB } from './data_B'
     import { getDataC } from './data_C'
+    import { getDataD } from './data_D'
 
     export default {
         data() {
@@ -86,7 +92,8 @@
                     // 连线ID
                     sourceId: undefined,
                     targetId: undefined
-                }
+                },
+                zoom: 0.5
             }
         },
         // 一些基础配置移动该文件中
@@ -161,14 +168,6 @@
                             to: conn.targetId,
                             label: conn.getLabel()
                         })
-                        // this.$confirm('确定删除所点击的线吗?', '提示', {
-                        //     confirmButtonText: '确定',
-                        //     cancelButtonText: '取消',
-                        //     type: 'warning'
-                        // }).then(() => {
-                        //     this.jsPlumb.deleteConnection(conn)
-                        // }).catch(() => {
-                        // })
                     })
                     // 连线
                     this.jsPlumb.bind("connection", (evt) => {
@@ -233,14 +232,21 @@
                     this.jsPlumb.draggable(node.id, {
                         containment: 'parent',
                         stop: function (el) {
-                            console.log('停止拖拽', el)
                         }
                     })
                 }
                 // 初始化连线
                 for (var i = 0; i < this.data.lineList.length; i++) {
                     let line = this.data.lineList[i]
-                    this.jsPlumb.connect({source: line.from, target: line.to, label: line.label ? line.label : ''}, this.jsplumbConnectOptions)
+                    var connParam = {
+                        source: line.from,
+                        target: line.to,
+                        label: line.label ? line.label : '',
+                        connector: line.connector ? line.connector : '',
+                        anchors: line.anchors ? line.anchors : undefined,
+                        paintStyle: line.paintStyle ? line.paintStyle : undefined,
+                    }
+                    this.jsPlumb.connect(connParam, this.jsplumbConnectOptions)
                 }
                 this.$nextTick(function () {
                     this.loadEasyFlowFinish = true
@@ -425,6 +431,10 @@
                 this.menu.left = evt.x + 'px'
                 this.menu.top = evt.y + 'px'
             },
+            repaintEverything() {
+                console.log('重绘')
+                this.jsPlumb.repaint()
+            },
             // 流程数据信息
             dataInfo() {
                 this.flowInfoVisible = true
@@ -461,13 +471,28 @@
             dataReloadC() {
                 this.dataReload(getDataC())
             },
+            // 模拟载入数据dataD
+            dataReloadD() {
+                this.dataReload(getDataD())
+            },
+            zoomAdd() {
+                if (this.zoom >= 1) {
+                    return
+                }
+                this.zoom = this.zoom + 0.1
+                this.$refs.efContainer.style.transform = `scale(${this.zoom})`
+                this.jsPlumb.setZoom(this.zoom)
+            },
+            zoomSub() {
+                if (this.zoom <= 0) {
+                    return
+                }
+                this.zoom = this.zoom - 0.1
+                this.$refs.efContainer.style.transform = `scale(${this.zoom})`
+                this.jsPlumb.setZoom(this.zoom)
+            },
             // 下载数据
             downloadData() {
-                var conn = this.jsPlumb.getConnections({
-                    source: 'nodeA',
-                    target: 'nodeB'
-                })[0]
-                console.log(conn)
                 this.$confirm('确定要下载该流程数据吗？', '提示', {
                     confirmButtonText: '确定',
                     cancelButtonText: '取消',

@@ -33,7 +33,8 @@
             activeElement: Object
         },
         data() {
-            return {}
+            return {
+            }
         },
         computed: {
             nodeContainerClass() {

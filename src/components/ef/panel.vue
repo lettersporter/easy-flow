@@ -9,16 +9,17 @@
                     <el-button type="text" icon="el-icon-delete" size="large" @click="deleteElement" :disabled="!this.activeElement.type"></el-button>
                     <el-divider direction="vertical"></el-divider>
                     <el-button type="text" icon="el-icon-download" size="large" @click="downloadData"></el-button>
-<!--                    <el-divider direction="vertical"></el-divider>-->
-<!--                    <el-button type="text" icon="el-icon-plus" size="large" @click="zoomAdd"></el-button>-->
-<!--                    <el-divider direction="vertical"></el-divider>-->
-<!--                    <el-button type="text" icon="el-icon-minus" size="large" @click="zoomSub"></el-button>-->
+                    <el-divider direction="vertical"></el-divider>
+                    <el-button type="text" icon="el-icon-plus" size="large" @click="zoomAdd"></el-button>
+                    <el-divider direction="vertical"></el-divider>
+                    <el-button type="text" icon="el-icon-minus" size="large" @click="zoomSub"></el-button>
                     <div style="float: right;margin-right: 5px">
-                        <el-button plain round icon="el-icon-document" @click="dataInfo" size="mini">流程信息</el-button>
-                        <el-button plain round @click="dataReloadA" icon="el-icon-refresh" size="mini">切换流程A</el-button>
-                        <el-button plain round @click="dataReloadB" icon="el-icon-refresh" size="mini">切换流程B</el-button>
-                        <el-button plain round @click="dataReloadC" icon="el-icon-refresh" size="mini">切换流程C</el-button>
-                        <el-button plain round @click="dataReloadD" icon="el-icon-refresh" size="mini">自定义样式</el-button>
+                        <el-button type="info" plain round icon="el-icon-document" @click="dataInfo" size="mini">流程信息</el-button>
+                        <el-button type="primary" plain round @click="dataReloadA" icon="el-icon-refresh" size="mini">切换流程A</el-button>
+                        <el-button type="primary" plain round @click="dataReloadB" icon="el-icon-refresh" size="mini">切换流程B</el-button>
+                        <el-button type="primary" plain round @click="dataReloadC" icon="el-icon-refresh" size="mini">切换流程C</el-button>
+                        <el-button type="primary" plain round @click="dataReloadD" icon="el-icon-refresh" size="mini">自定义样式</el-button>
+                        <el-button type="info" plain round icon="el-icon-document" @click="openHelp" size="mini">帮助</el-button>
                     </div>
                 </div>
             </el-col>
@@ -50,6 +51,7 @@
         </div>
         <!-- 流程数据详情 -->
         <flow-info v-if="flowInfoVisible" ref="flowInfo" :data="data"></flow-info>
+        <flow-help v-if="flowHelpVisible" ref="flowHelp"></flow-help>
     </div>
 
 </template>
@@ -63,6 +65,7 @@
     import flowNode from '@/components/ef/node'
     import nodeMenu from '@/components/ef/node_menu'
     import FlowInfo from '@/components/ef/info'
+    import FlowHelp from '@/components/ef/help'
     import FlowNodeForm from './node_form'
     import lodash from 'lodash'
     import { getDataA } from './data_A'
@@ -81,6 +84,7 @@
                 flowInfoVisible: false,
                 // 是否加载完毕标志位
                 loadEasyFlowFinish: false,
+                flowHelpVisible: false,
                 // 数据
                 data: {},
                 // 激活的元素、可能是节点、可能是连线
@@ -99,7 +103,7 @@
         // 一些基础配置移动该文件中
         mixins: [easyFlowMixin],
         components: {
-            draggable, flowNode, nodeMenu, FlowInfo, FlowNodeForm
+            draggable, flowNode, nodeMenu, FlowInfo, FlowNodeForm, FlowHelp
         },
         directives: {
             'flowDrag': {
@@ -226,14 +230,18 @@
                 for (var i = 0; i < this.data.nodeList.length; i++) {
                     let node = this.data.nodeList[i]
                     // 设置源点，可以拖出线连接其他节点
-                    this.jsPlumb.makeSource(node.id, this.jsplumbSourceOptions)
+                    this.jsPlumb.makeSource(node.id, lodash.merge(this.jsplumbSourceOptions, {}))
                     // // 设置目标点，其他源点拖出的线可以连接该节点
                     this.jsPlumb.makeTarget(node.id, this.jsplumbTargetOptions)
-                    this.jsPlumb.draggable(node.id, {
-                        containment: 'parent',
-                        stop: function (el) {
-                        }
-                    })
+                    if (!node.viewOnly) {
+                        this.jsPlumb.draggable(node.id, {
+                            containment: 'parent',
+                            stop: function (el) {
+                                // 拖拽节点结束后的对调
+                                console.log('拖拽结束: ', el)
+                            }
+                        })
+                    }
                 }
                 // 初始化连线
                 for (var i = 0; i < this.data.lineList.length; i++) {
@@ -252,6 +260,7 @@
                     this.loadEasyFlowFinish = true
                 })
             },
+            // 设置连线条件
             setLineLabel(from, to, label) {
                 var conn = this.jsPlumb.getConnections({
                     source: from,
@@ -373,7 +382,11 @@
                     this.jsPlumb.makeSource(nodeId, this.jsplumbSourceOptions)
                     this.jsPlumb.makeTarget(nodeId, this.jsplumbTargetOptions)
                     this.jsPlumb.draggable(nodeId, {
-                        containment: 'parent'
+                        containment: 'parent',
+                        stop: function (el) {
+                            // 拖拽节点结束后的对调
+                            console.log('拖拽结束: ', el)
+                        }
                     })
                 })
             },
@@ -432,7 +445,6 @@
                 this.menu.top = evt.y + 'px'
             },
             repaintEverything() {
-                console.log('重绘')
                 this.jsPlumb.repaint()
             },
             // 流程数据信息
@@ -507,6 +519,12 @@
                     downloadAnchorNode.remove();
                     this.$message.success("正在下载中,请稍后...")
                 }).catch(() => {
+                })
+            },
+            openHelp() {
+                this.flowHelpVisible = true
+                this.$nextTick(function () {
+                    this.$refs.flowHelp.init()
                 })
             }
         }

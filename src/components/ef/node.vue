@@ -33,8 +33,7 @@
             activeElement: Object
         },
         data() {
-            return {
-            }
+            return {}
         },
         computed: {
             nodeContainerClass() {
@@ -53,8 +52,8 @@
             nodeIcoClass() {
                 var nodeIcoClass = {}
                 nodeIcoClass[this.node.ico] = true
-                // 添加该class可以推拽连线出来
-                nodeIcoClass['flow-node-drag'] = true
+                // 添加该class可以推拽连线出来，viewOnly 可以控制节点是否运行编辑
+                nodeIcoClass['flow-node-drag'] = this.node.viewOnly ? false : true
                 return nodeIcoClass
             }
         },

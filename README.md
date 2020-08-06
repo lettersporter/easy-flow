@@ -38,6 +38,7 @@
 * 新增缩放（还存在一些问题）
 * 新增使用说明
 * 新增拖拽回调
+* 节点新增viewOnly参数，可以控制节点是否只读
 
 2020年6月14日
 * 新增：连线自定义类型
@@ -108,6 +109,7 @@
             left: '351px',
             top: '96px',
             ico: 'el-icon-goods',
+            viewOnly: true,
             state: 'error'
         },
         {
@@ -169,6 +171,9 @@
 |  top  |  是  |  节点在页面上的Y坐标，以px结尾 |         |
 |  ico  |  是  |   节点显示的图标，标识   |         |
 |  state  |  否  |   状态，状态不同右侧展示的图标不同   | success、error、warning、running |
+|  viewOnly  |  否  |   是否仅用于浏览，true: 不可拖拽   | true 、false|
+
+
 
 
 ## lineList 参数说明

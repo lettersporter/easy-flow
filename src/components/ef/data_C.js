@@ -1,4 +1,4 @@
-var dataC = {
+let dataC = {
     name: '流程C',
     nodeList: [
         {
@@ -37,6 +37,6 @@ var dataC = {
     ]
 }
 
-export function getDataC() {
+export function getDataC () {
     return dataC
 }

@@ -1,4 +1,4 @@
-var data_D = {
+var dataD = {
     name: '流程D',
     nodeList: [
         {
@@ -58,10 +58,14 @@ var data_D = {
         from: 'nodeC',
         to: 'nodeD',
         label: '默认连线样式,动态锚点'
+    }, {
+        from: 'nodeC',
+        to: 'nodeC',
+        label: '自连接'
     }
     ]
 }
 
 export function getDataD() {
-    return data_D
+    return dataD
 }

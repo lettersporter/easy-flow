@@ -1,4 +1,4 @@
-var data_B = {
+let dataB = {
     name: '流程B',
     nodeList: [
         {
@@ -56,6 +56,6 @@ var data_B = {
     ]
 }
 
-export function getDataB() {
-    return data_B
+export function getDataB () {
+    return dataB
 }

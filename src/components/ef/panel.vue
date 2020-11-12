@@ -19,6 +19,7 @@
                         <el-button type="primary" plain round @click="dataReloadB" icon="el-icon-refresh" size="mini">切换流程B</el-button>
                         <el-button type="primary" plain round @click="dataReloadC" icon="el-icon-refresh" size="mini">切换流程C</el-button>
                         <el-button type="primary" plain round @click="dataReloadD" icon="el-icon-refresh" size="mini">自定义样式</el-button>
+                        <el-button type="primary" plain round @click="dataReloadE" icon="el-icon-refresh" size="mini">力导图</el-button>
                         <el-button type="info" plain round icon="el-icon-document" @click="openHelp" size="mini">帮助</el-button>
                     </div>
                 </div>
@@ -72,6 +73,8 @@
     import { getDataB } from './data_B'
     import { getDataC } from './data_C'
     import { getDataD } from './data_D'
+    import { getDataE } from './data_E'
+    import { ForceDirected } from './force-directed'
 
     export default {
         data() {
@@ -486,6 +489,17 @@
             // 模拟载入数据dataD
             dataReloadD() {
                 this.dataReload(getDataD())
+            },
+            // 模拟加载数据dataE，自适应创建坐标
+            dataReloadE() {
+                let dataE = getDataE()
+                let tempData = lodash.cloneDeep(dataE)
+                let data = ForceDirected(tempData)
+                this.dataReload(data)
+                this.$message({
+                    message: '力导图每次产生的布局是不一样的',
+                    type: 'warning'
+                });
             },
             zoomAdd() {
                 if (this.zoom >= 1) {

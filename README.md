@@ -225,7 +225,7 @@
 
 ``` bash
 # 下载工程
-git clone  https://github.com/BiaoChengLiu/easy-flow.git
+git clone  https://github.com/lettersporter/easy-flow.git
 
 # 安装依赖包
 npm install
@@ -238,7 +238,7 @@ npm run dev
 ```
 
 ## github
-https://github.com/BiaoChengLiu/easy-flow
+https://github.com/lettersporter/easy-flow
 
 ## 码云
 https://gitee.com/xiaoka2017/easy-flow

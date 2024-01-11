@@ -100,7 +100,7 @@
                     sourceId: undefined,
                     targetId: undefined
                 },
-                zoom: 0.5
+                zoom: 1
             }
         },
         // 一些基础配置移动该文件中
@@ -502,11 +502,11 @@
                 });
             },
             zoomAdd() {
-                if (this.zoom >= 1) {
+                if (this.zoom >= 2) {
                     return
                 }
                 this.zoom = this.zoom + 0.1
-                this.$refs.efContainer.style.transform = `scale(${this.zoom})`
+                this.$refs.efContainer.style.zoom = this.zoom
                 this.jsPlumb.setZoom(this.zoom)
             },
             zoomSub() {
@@ -514,7 +514,7 @@
                     return
                 }
                 this.zoom = this.zoom - 0.1
-                this.$refs.efContainer.style.transform = `scale(${this.zoom})`
+                this.$refs.efContainer.style.zoom = this.zoom
                 this.jsPlumb.setZoom(this.zoom)
             },
             // 下载数据
